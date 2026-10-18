@@ -20,7 +20,16 @@
     GRADLE_USER_HOME=../tools/gradle-home \
     ../tools/gradle-8.7/bin/gradle --no-daemon --console=plain assembleDebug
 
-产物：`android/app/build/outputs/apk/debug/app-debug.apk`（复制到 `dist/` 即可分发）。
+产物：`android/app/build/outputs/apk/debug/app-debug.apk`
+
+## 发布（GitHub Releases，APK 不入库）
+
+    mkdir -p dist
+    cp android/app/build/outputs/apk/debug/app-debug.apk dist/ElinkMemo-0.7-debug.apk
+    gh release create v0.7 dist/ElinkMemo-0.7-debug.apk \
+      --title "ElinkMemo v0.7" --notes-file tools/release-notes.md
+
+`dist/` 已在 .gitignore 中忽略；Release 资产由 `gh release create` 上传。
 
 ## 版本参数
 

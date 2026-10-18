@@ -13,7 +13,7 @@
 |---|---|
 | `prototype/` | 高保真 HTML 交互原型（设计契约，用户已验收） |
 | `android/` | Kotlin + Compose 原生 App 源码 |
-| `dist/ElinkMemo-0.6-debug.apk` | 可安装的 debug APK |
+| [GitHub Releases](https://github.com/yuyao110120/ElinkMemo/releases) | 可安装的 debug APK（`dist/` 不入库） |
 | `docs/SPEC.md` | 冻结规格说明书 |
 | `docs/BUILD.md` | 构建 / 安装 / 环境说明 |
 | `docs/research/` | 三份事实调研（墨水屏平台、WebDAV/CORS、Leaf2 与构建链） |
@@ -21,7 +21,7 @@
 
 ## 安装 APK（Leaf2）
 
-1. 把 `dist/ElinkMemo-0.6-debug.apk` 传到设备（USB 拷贝 / BooxDrop / 微信文件传输助手均可）
+1. 从 [Releases](https://github.com/yuyao110120/ElinkMemo/releases) 下载 `ElinkMemo-0.6-debug.apk`，传到设备（USB 拷贝 / BooxDrop / 微信文件传输助手均可）
 2. 设备上点击安装；首次需允许「安装未知应用」
 3. 打开 ElinkMemo：右滑划掉、点击编辑、+ 新增、⋯ 设置
 4. 设置 → WebDAV 设置：填 NAS 地址（如 `http://192.168.1.x:5005/`）、用户名、密码、远端文件（默认 `ElinkMemo/notes.json`）→ 测试连接 → 保存
@@ -29,7 +29,7 @@
 
 USB 调试方式（可选）：
 
-    tools/android-sdk/platform-tools/adb install -r dist/ElinkMemo-0.6-debug.apk
+    tools/android-sdk/platform-tools/adb install -r ElinkMemo-0.6-debug.apk
 
 ## 本地跑原型
 
@@ -37,9 +37,13 @@ USB 调试方式（可选）：
 
 Chrome 打开 http://127.0.0.1:4173/ ，Leaf2 浏览器打开 `http://<Mac 局域网 IP>:4173/`。
 
-## 构建
+## 构建与发布
 
-见 [docs/BUILD.md](docs/BUILD.md)。
+构建见 [docs/BUILD.md](docs/BUILD.md)。发布走 GitHub Releases（APK 不入库）：
+
+    git tag -a v0.7 -m "ElinkMemo v0.7" && git push origin v0.7
+    gh release create v0.7 dist/ElinkMemo-0.7-debug.apk --title "ElinkMemo v0.7" --notes-file tools/release-notes.md
+
 
 ## v0.6 变更（2026-10-18）
 
