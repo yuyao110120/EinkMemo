@@ -2,8 +2,9 @@
 
 ## 怎么打开
 - 电脑 Chrome：http://127.0.0.1:4173/ （自动套 674×896 的 Leaf2 画布，画布外灰色）
-- Leaf2 浏览器：http://192.168.0.31:4173/ （全屏铺满，无画布边框；手机/平板建议加书签）
-- 设备诊断：http://192.168.0.31:4173/diag.html （把这组数字截图给 Lead）
+- Leaf2 浏览器：http://<Mac 局域网 IP>:4173/ （全屏铺满，无画布边框；手机/平板建议加书签）
+- 设备诊断：http://<Mac 局域网 IP>:4173/diag.html （把这组数字截图给 Lead）
+- 查本机局域网 IP：`ipconfig getifaddr en0`（Wi‑Fi 接口）
 
 服务如果停了，在项目根目录运行：
     python3 -m http.server 4173 --bind 0.0.0.0 --directory prototype
