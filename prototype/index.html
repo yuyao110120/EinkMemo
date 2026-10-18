@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>ElinkMemo · 高保真原型</title>
+<link rel="icon" href="data:,">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div id="stage">
+  <div id="device">
+    <div id="screen">
+      <div id="view"></div>
+      <div id="fail"></div>
+    </div>
+    <div id="bottom">
+      <div id="bar">
+        <button class="iconbtn left" data-action="settings" aria-label="设置">
+          <svg width="28" height="28" viewBox="0 0 28 28" shape-rendering="crispEdges" aria-hidden="true">
+            <rect x="4" y="12" width="4" height="4" fill="#000"/>
+            <rect x="12" y="12" width="4" height="4" fill="#000"/>
+            <rect x="20" y="12" width="4" height="4" fill="#000"/>
+          </svg>
+        </button>
+        <div id="pageno"></div>
+        <button class="iconbtn right" data-action="add" aria-label="新增">
+          <svg width="28" height="28" viewBox="0 0 28 28" shape-rendering="crispEdges" aria-hidden="true">
+            <rect x="12" y="4" width="4" height="20" fill="#000"/>
+            <rect x="4" y="12" width="20" height="4" fill="#000"/>
+          </svg>
+        </button>
+      </div>
+      <div id="inputbar" hidden>
+        <button id="btn-cancel" data-action="cancelinput" aria-label="取消">×</button>
+        <input id="note-input" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="添加一条…">
+      </div>
+    </div>
+    <div id="sheet" hidden>
+      <div class="sheetrow" data-action="restore">还原为未完成</div>
+      <div class="sheetrow" data-action="delete">永久删除</div>
+      <div class="sheetrow" data-action="cancel">取消</div>
+    </div>
+  </div>
+  <div id="caption">ElinkMemo 原型 · Leaf2 画布 674 × 896</div>
+</div>
+<script src="app.js"></script>
+</body>
+</html>

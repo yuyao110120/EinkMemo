@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ElinkMemo · 设备诊断</title>
+<link rel="icon" href="data:,">
+<style>
+  html, body { margin: 0; background: #fff; color: #000; }
+  body { font-family: "Noto Sans CJK SC", "PingFang SC", "Hiragino Sans GB", "Source Han Sans SC", "Microsoft YaHei", sans-serif; padding: 24px 20px 48px; font-size: 22px; line-height: 1.6; }
+  h1 { font-size: 28px; margin: 0 0 8px; }
+  .tip { font-size: 16px; margin: 0 0 12px; }
+  dt { font-size: 15px; margin-top: 18px; }
+  dd { font-size: 30px; margin: 2px 0 0; font-weight: 600; }
+  .note { font-size: 15px; margin-top: 28px; border-top: 1px solid #000; padding-top: 12px; }
+  a { color: #000; }
+</style>
+</head>
+<body>
+<h1>Leaf2 设备诊断</h1>
+<p class="tip">请把这组数字截图给 Lead，用于校准原生 dp。打开本页后不要缩放、不要下拉。</p>
+<dl>
+  <dt>视口宽高（CSS px）</dt><dd id="vp">—</dd>
+  <dt>设备像素比 DPR</dt><dd id="dpr">—</dd>
+  <dt>屏幕物理像素</dt><dd id="phys">—</dd>
+  <dt>建议排版（10 行分页 + 56px 底栏）</dt><dd id="calc">—</dd>
+  <dt>UA</dt><dd id="ua" style="font-size:13px;font-weight:400;word-break:break-all;">—</dd>
+</dl>
+<div class="note">ElinkMemo 原型 · <a href="index.html">返回原型</a></div>
+<script>
+  function update() {
+    var w = window.innerWidth, h = window.innerHeight, dpr = window.devicePixelRatio || 1;
+    document.getElementById('vp').textContent = w + ' × ' + h;
+    document.getElementById('dpr').textContent = String(dpr);
+    document.getElementById('phys').textContent = Math.round(w * dpr) + ' × ' + Math.round(h * dpr);
+    var rowH = Math.round((h - 56) / 10);
+    document.getElementById('calc').textContent = '行高 ≈ ' + rowH + ' px · 字号 ≈ ' + Math.round(rowH * 0.34) + ' px';
+    document.getElementById('ua').textContent = navigator.userAgent;
+  }
+  update();
+  window.addEventListener('resize', update);
+</script>
+</body>
+</html>
