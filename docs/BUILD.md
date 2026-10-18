@@ -38,6 +38,10 @@
 
 工作流 `.github/workflows/release.yml` 会：JDK 17 + Android SDK → `./gradlew assembleDebug` → 生成 Release 并上传 `ElinkMemo-<版本>-debug.apk`。Release 说明优先读取 `docs/releases/v0.7.md`，不存在时自动生成。
 
+### 签名说明
+
+CI 通过仓库 Secret `ANDROID_DEBUG_KEYSTORE_BASE64` 恢复本机 `~/.android/debug.keystore`（默认 debug 证书），并以 `ELINKMEMO_DEBUG_KEYSTORE` 传给 Gradle，因此 **Release APK 与本地 `./gradlew assembleDebug` 同签名，可覆盖安装、数据不丢**。若更换 keystore，已安装版本需要先卸载再装。
+
 ### 手动（本地构建后发布）
 
     mkdir -p dist

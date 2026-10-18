@@ -1,3 +1,5 @@
+import java.io.File
+
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
@@ -13,6 +15,18 @@ android {
         targetSdk = 30
         versionCode = 6
         versionName = "0.6"
+    }
+
+    signingConfigs {
+        getByName("debug") {
+            val custom = System.getenv("ELINKMEMO_DEBUG_KEYSTORE")
+            if (!custom.isNullOrBlank() && File(custom).exists()) {
+                storeFile = File(custom)
+                storePassword = System.getenv("ELINKMEMO_DEBUG_KEYSTORE_PASSWORD") ?: "android"
+                keyAlias = System.getenv("ELINKMEMO_DEBUG_KEY_ALIAS") ?: "androiddebugkey"
+                keyPassword = System.getenv("ELINKMEMO_DEBUG_KEY_PASSWORD") ?: "android"
+            }
+        }
     }
 
     buildTypes {
