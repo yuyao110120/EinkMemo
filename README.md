@@ -17,6 +17,8 @@
 | `docs/SPEC.md` | 冻结规格说明书 |
 | `docs/BUILD.md` | 构建 / 安装 / 环境说明 |
 | `docs/research/` | 三份事实调研（墨水屏平台、WebDAV/CORS、Leaf2 与构建链） |
+| `.github/workflows/release.yml` | 推送 `v*` tag 自动构建 APK 并发布 Release |
+| `docs/releases/` | 各版本 Release 说明 |
 | `tools/` | 本地工具链（JDK17 / Gradle / Android SDK）与 QA 脚本（不入交付） |
 
 ## 安装 APK（Leaf2）
@@ -39,10 +41,17 @@ Chrome 打开 http://127.0.0.1:4173/ ，Leaf2 浏览器打开 `http://<Mac 局�
 
 ## 构建与发布
 
-构建见 [docs/BUILD.md](docs/BUILD.md)。发布走 GitHub Releases（APK 不入库）：
+构建（需 JDK 17，首次会下载 Gradle 8.7；本机离线工具链见 [docs/BUILD.md](docs/BUILD.md)）：
+
+    cd android && ./gradlew assembleDebug
+
+发布走 GitHub Releases（APK 不入库）。**推送 tag 后 GitHub Actions 自动构建并创建 Release**：
 
     git tag -a v0.7 -m "ElinkMemo v0.7" && git push origin v0.7
-    gh release create v0.7 dist/ElinkMemo-0.7-debug.apk --title "ElinkMemo v0.7" --notes-file tools/release-notes.md
+
+如果 `docs/releases/v0.7.md` 存在，Release 会用它作为说明；否则自动生成。手动发布（本地构建后）也可：
+
+    gh release create v0.7 dist/ElinkMemo-0.7-debug.apk --title "ElinkMemo v0.7" --notes-file docs/releases/v0.7.md
 
 
 ## v0.6 变更（2026-10-18）

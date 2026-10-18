@@ -13,21 +13,37 @@
 
 ## 构建 debug APK
 
+优先用仓库内的 Gradle wrapper（CI 也走这条路径，需 JDK 17、联网下载 Gradle 8.7）：
+
+    cd android
+    ./gradlew assembleDebug
+
+本机离线工具链（已装在 tools/，无需下载）：
+
     cd android
     JAVA_HOME=../tools/jdk17/Contents/Home \
     ANDROID_HOME=../tools/android-sdk \
     ANDROID_USER_HOME=../tools/android-user-home \
     GRADLE_USER_HOME=../tools/gradle-home \
-    ../tools/gradle-8.7/bin/gradle --no-daemon --console=plain assembleDebug
+    ./gradlew --no-daemon --console=plain assembleDebug
 
 产物：`android/app/build/outputs/apk/debug/app-debug.apk`
 
 ## 发布（GitHub Releases，APK 不入库）
 
+### 自动（推荐）：推 tag 触发 GitHub Actions
+
+    git tag -a v0.7 -m "ElinkMemo v0.7"
+    git push origin v0.7
+
+工作流 `.github/workflows/release.yml` 会：JDK 17 + Android SDK → `./gradlew assembleDebug` → 生成 Release 并上传 `ElinkMemo-<版本>-debug.apk`。Release 说明优先读取 `docs/releases/v0.7.md`，不存在时自动生成。
+
+### 手动（本地构建后发布）
+
     mkdir -p dist
     cp android/app/build/outputs/apk/debug/app-debug.apk dist/ElinkMemo-0.7-debug.apk
     gh release create v0.7 dist/ElinkMemo-0.7-debug.apk \
-      --title "ElinkMemo v0.7" --notes-file tools/release-notes.md
+      --title "ElinkMemo v0.7" --notes-file docs/releases/v0.7.md
 
 `dist/` 已在 .gitignore 中忽略；Release 资产由 `gh release create` 上传。
 
