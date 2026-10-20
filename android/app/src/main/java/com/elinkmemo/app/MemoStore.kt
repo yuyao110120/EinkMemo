@@ -88,6 +88,8 @@ class MemoStore(context: Context) {
         if (prefs.getInt(K_FONT_MODE, 0) == 1) FontMode.Pixel else FontMode.System
     )
         private set
+    var swapId by mutableStateOf<String?>(null)
+        private set
 
     val activeItems: List<NoteItem>
         get() = items.filter { it.archivedAt == null }
@@ -197,11 +199,55 @@ class MemoStore(context: Context) {
         bumpRevision()
     }
 
+    fun clearSwapSelection() {
+        swapId = null
+    }
+
+    /** 点条目前的像素小图：选中 / 再点取消 / 已选中时点别的条目则交换 */
+    fun tapDoodle(id: String) {
+        val current = swapId
+        when {
+            current == null -> swapId = id
+            current == id -> swapId = null
+            else -> {
+                swapItems(current, id)
+                swapId = null
+            }
+        }
+    }
+
+    /** 点条目正文：未选中时编辑；选中时点另一条交换位置 */
+    fun tapRow(id: String) {
+        val current = swapId
+        if (current == null) {
+            openEdit(id)
+        } else {
+            if (current != id) swapItems(current, id)
+            swapId = null
+        }
+    }
+
+    private fun swapItems(aId: String, bId: String) {
+        val from = items.indexOfFirst { it.id == aId }
+        val to = items.indexOfFirst { it.id == bId }
+        if (from < 0 || to < 0 || from == to) return
+        val now = System.currentTimeMillis()
+        val list = items.toMutableList()
+        val a = list[from].copy(updatedAt = now)
+        val b = list[to].copy(updatedAt = now)
+        list[from] = b
+        list[to] = a
+        items = list
+        bumpRevision()
+    }
+
     fun openAdd() {
+        swapId = null
         editing = Editing(EditMode.Add)
     }
 
     fun openEdit(id: String) {
+        swapId = null
         if (items.none { it.id == id }) return
         editing = Editing(EditMode.Edit, id)
     }
@@ -270,6 +316,7 @@ class MemoStore(context: Context) {
     }
 
     fun turnPage(delta: Int) {
+        swapId = null
         val next = (page + delta).coerceIn(0, pageCount - 1)
         if (next != page) page = next
     }

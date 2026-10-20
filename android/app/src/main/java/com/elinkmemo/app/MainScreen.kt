@@ -54,9 +54,14 @@ fun MainScreen(store: MemoStore) {
                             rowPx = rowPx,
                             fontSp = fontSp,
                             showDivider = index < pageItems.lastIndex,
+                            selected = store.swapId == item.id,
                             onTap = {
                                 store.dismissHint()
-                                store.openEdit(item.id)
+                                store.tapRow(item.id)
+                            },
+                            onIconTap = {
+                                store.dismissHint()
+                                store.tapDoodle(item.id)
                             },
                             onSwipeRight = {
                                 store.dismissHint()
@@ -92,7 +97,9 @@ private fun NoteRow(
     rowPx: Float,
     fontSp: TextUnit,
     showDivider: Boolean,
+    selected: Boolean,
     onTap: () -> Unit,
+    onIconTap: () -> Unit,
     onSwipeRight: () -> Unit,
     onSwipeLeft: () -> Unit,
     onVerticalSwipe: (Float) -> Unit,
@@ -118,16 +125,29 @@ private fun NoteRow(
     val textGapDp = (visualGap - iconSizeDp * (2f / 46f)).coerceAtLeast(0.dp)
     val textStart = iconStartDp + iconSizeDp + textGapDp
 
+    val iconHitPx = with(density) { (iconStartDp + iconSizeDp).toPx() }
     Box(
         Modifier
             .fillMaxWidth()
             .height(rowHeight)
-            .pointerInput(item.id) {
-                detectRowGestures(onTap, onSwipeRight, onSwipeLeft, onVerticalSwipe)
+            .background(if (selected) InkBlack else InkWhite)
+            .pointerInput(item.id, selected, iconHitPx) {
+                detectRowGestures(
+                    onTap = { pos ->
+                        if (pos.x <= iconHitPx) onIconTap() else onTap()
+                    },
+                    onSwipeRight = { if (!selected) onSwipeRight() },
+                    onSwipeLeft = { if (!selected) onSwipeLeft() },
+                    onVerticalSwipe = { dy -> if (!selected) onVerticalSwipe(dy) },
+                )
             }
     ) {
         NoteDoodle(
-            color = if (item.done) InkGray else InkBlack,
+            color = when {
+                selected -> InkWhite
+                item.done -> InkGray
+                else -> InkBlack
+            },
             modifier = Modifier
                 .align(Alignment.CenterStart)
                 .padding(start = iconStartDp)
@@ -137,7 +157,11 @@ private fun NoteRow(
             text = item.text,
             fontSize = fontSp,
             lineHeight = fontSp,
-            color = if (item.done) InkGray else InkBlack,
+            color = when {
+                selected -> InkWhite
+                item.done -> InkGray
+                else -> InkBlack
+            },
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,
             textDecoration = if (item.done) TextDecoration.LineThrough else null,

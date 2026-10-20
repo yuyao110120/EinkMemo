@@ -202,6 +202,7 @@ fun HelpScreen(store: MemoStore) {
         ) {
             HelpSection("操作说明")
             HelpLine("右滑条目：划掉完成；再右滑取消")
+            HelpLine("点条目前的小图：选中后再点任意一条，交换两条位置")
             HelpLine("点击或左滑条目：编辑文本")
             HelpLine("右下 +：新增；键盘上回车保存并继续输入")
             HelpLine("翻页：上下滑，或使用设备的翻页 / 音量键")

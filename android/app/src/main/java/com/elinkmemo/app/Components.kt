@@ -336,11 +336,18 @@ fun BottomBar(store: MemoStore, barHeight: Dp) {
                     .clickable(interactionSource = moreInteraction, indication = null) {
                         store.dismissHint()
                         store.editing = null
+                        store.clearSwapSelection()
                         store.screen = Screen.Settings
                     },
                 contentAlignment = Alignment.Center,
             ) { MoreIcon(iconSize) }
-            if (store.pageCount > 1) {
+            if (store.swapId != null) {
+                InkText(
+                    "点另一条交换",
+                    (barHeight.value * 0.45f).coerceIn(9f, 13f).sp,
+                    Modifier.align(Alignment.Center),
+                )
+            } else if (store.pageCount > 1) {
                 InkText(
                     (store.page + 1).toString() + "/" + store.pageCount,
                     (barHeight.value * 0.45f).coerceIn(9f, 13f).sp,
@@ -495,7 +502,7 @@ fun ConflictOverlay(store: MemoStore) {
 }
 
 suspend fun PointerInputScope.detectRowGestures(
-    onTap: () -> Unit,
+    onTap: (Offset) -> Unit,
     onSwipeRight: () -> Unit,
     onSwipeLeft: () -> Unit,
     onVerticalSwipe: (Float) -> Unit,
@@ -526,7 +533,7 @@ suspend fun PointerInputScope.detectRowGestures(
         val horizontal = abs(dx) > abs(dy) * 1.4f
         val vertical = abs(dy) > abs(dx) * 1.4f
         when {
-            abs(dx) < tapSlop && abs(dy) < tapSlop -> onTap()
+            abs(dx) < tapSlop && abs(dy) < tapSlop -> onTap(down.position)
             horizontal && abs(dx) > horizontalSlop -> if (dx > 0) onSwipeRight() else onSwipeLeft()
             vertical && abs(dy) > verticalSlop -> onVerticalSwipe(dy)
         }

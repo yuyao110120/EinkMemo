@@ -45,12 +45,13 @@ fun AppRoot(activity: MainActivity) {
 
     BackHandler(
         enabled = store.conflict != null || store.selectedArchiveId != null ||
-            store.editing != null || store.screen != Screen.Main
+            store.editing != null || store.swapId != null || store.screen != Screen.Main
     ) {
         when {
             store.conflict != null -> store.cancelConflict()
             store.selectedArchiveId != null -> store.selectedArchiveId = null
             store.editing != null -> store.cancelEdit()
+            store.swapId != null -> store.clearSwapSelection()
             store.screen == Screen.Settings -> store.screen = Screen.Main
             else -> store.screen = Screen.Settings
         }
