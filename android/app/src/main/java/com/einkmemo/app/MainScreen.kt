@@ -38,9 +38,13 @@ fun MainScreen(store: MemoStore) {
         Box(Modifier.weight(1f).fillMaxWidth()) {
             BoxWithConstraints(Modifier.fillMaxSize()) {
                 val density = LocalDensity.current
-                // 行高保持在可读范围（≥56dp），行数随分辨率/横竖屏自适应（3–10 行/页）
+                // 行高保持在可读范围（≥56dp），行数随分辨率/横竖屏自适应（3–10 行/页）。
+                // 键盘弹出时保持每页行数不变，让整页等比缩小（不因可用高度变小而减行）。
                 val desiredRows = (maxHeight.value / 56f).toInt().coerceIn(3, PAGE_SIZE)
-                LaunchedEffect(desiredRows) { store.updateRowsPerPage(desiredRows) }
+                val editing = store.editing != null
+                LaunchedEffect(desiredRows, editing) {
+                    if (!editing) store.updateRowsPerPage(desiredRows)
+                }
                 val rows = store.rowsPerPage
                 val rowHeight = maxHeight / rows.toFloat()
                 val rowPx = with(density) { rowHeight.toPx() }

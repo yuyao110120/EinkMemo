@@ -13,8 +13,8 @@ android {
         applicationId = "com.einkmemo.app"
         minSdk = 26
         targetSdk = 30
-        versionCode = 1200
-        versionName = "0.12.0"
+        versionCode = 1201
+        versionName = "0.12.1"
     }
 
     signingConfigs {

@@ -38,6 +38,7 @@ import androidx.compose.ui.unit.sp
 fun SettingsScreen(store: MemoStore) {
     Column(Modifier.fillMaxSize().background(InkWhite)) {
         NavRow { store.screen = Screen.Main }
+        Column(Modifier.weight(1f).verticalScroll(rememberScrollState())) {
         MenuRow(stringResource(R.string.settings_webdav), chevron = true) {
             store.clearTestResult()
             store.screen = Screen.WebDav
@@ -64,6 +65,7 @@ fun SettingsScreen(store: MemoStore) {
         ) { store.screen = Screen.Language }
         MenuRow(stringResource(R.string.settings_help), chevron = true) { store.screen = Screen.Help }
         MenuRow(stringResource(R.string.settings_about), chevron = true) { store.screen = Screen.About }
+        }
     }
 }
 
@@ -93,6 +95,7 @@ fun LanguageScreen(store: MemoStore) {
     val context = LocalContext.current
     Column(Modifier.fillMaxSize().background(InkWhite)) {
         NavRow { store.screen = Screen.Settings }
+        Column(Modifier.weight(1f).verticalScroll(rememberScrollState())) {
         LanguageOption(stringResource(R.string.language_system), store.languageMode == LanguageMode.System) {
             applyLanguage(store, context, LanguageMode.System)
         }
@@ -101,6 +104,7 @@ fun LanguageScreen(store: MemoStore) {
         }
         LanguageOption(stringResource(R.string.language_chinese), store.languageMode == LanguageMode.Chinese) {
             applyLanguage(store, context, LanguageMode.Chinese)
+        }
         }
     }
 }
@@ -132,6 +136,7 @@ fun WebDavScreen(store: MemoStore) {
     BackHandler { saveAndBack() }
     Column(Modifier.fillMaxSize().background(InkWhite)) {
         NavRow { saveAndBack() }
+        Column(Modifier.weight(1f).verticalScroll(rememberScrollState())) {
         FieldRow(stringResource(R.string.webdav_url), cfg.url, stringResource(R.string.webdav_url_hint), onValueChange = { cfg = cfg.copy(url = it) })
         FieldRow(stringResource(R.string.webdav_user), cfg.user, stringResource(R.string.webdav_user_hint), onValueChange = { cfg = cfg.copy(user = it) })
         FieldRow(stringResource(R.string.webdav_pass), cfg.pass, stringResource(R.string.webdav_pass_hint), onValueChange = { cfg = cfg.copy(pass = it) }, isPassword = true)
@@ -141,6 +146,7 @@ fun WebDavScreen(store: MemoStore) {
             store.testConnection()
         }
         ButtonRow(stringResource(R.string.webdav_save)) { saveAndBack() }
+        }
     }
 }
 
