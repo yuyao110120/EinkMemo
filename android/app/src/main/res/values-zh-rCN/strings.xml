@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">EinkMemo</string>
+
+    <string name="nav_back">← 返回</string>
+    <string name="cancel">取消</string>
+    <string name="page_indicator">%1$d/%2$d</string>
+
+    <string name="swap_hint">点另一条交换</string>
+    <string name="sync_fail_line">同步失败 · 点此查看</string>
+    <string name="input_hint_add">添加一条…</string>
+    <string name="input_hint_edit">修改…</string>
+
+    <string name="hint_swipe_off">右滑划掉</string>
+    <string name="hint_tap_edit">点击编辑</string>
+    <string name="hint_swap">点小图选中 · 再点一条换位</string>
+    <string name="hint_turn_page">上下滑或翻页键翻页</string>
+
+    <string name="conflict_title">同步冲突</string>
+    <string name="conflict_body">远端和本机都有修改，选择保留哪一份：</string>
+    <string name="conflict_keep_local">保留本机（覆盖远端）</string>
+    <string name="conflict_keep_remote">保留远端（覆盖本机）</string>
+
+    <string name="settings_webdav">WebDAV 设置</string>
+    <string name="settings_sync_now">立即同步</string>
+    <string name="settings_archive_done">归档已完成 (%1$d)</string>
+    <string name="settings_archive_done_sub">把划掉的条目移入归档记录</string>
+    <string name="settings_archive_records">归档记录 (%1$d)</string>
+    <string name="settings_font">字体</string>
+    <string name="settings_font_system_sub">系统字体 · 点击切换为像素</string>
+    <string name="settings_font_pixel_sub">像素字体 · 点击切换为系统</string>
+    <string name="settings_help">帮助</string>
+    <string name="settings_about">关于</string>
+
+    <string name="sync_syncing">同步中…</string>
+    <string name="sync_never">尚未同步</string>
+    <string name="sync_ok">成功</string>
+    <string name="sync_failed">失败</string>
+    <string name="sync_last">上次同步：%1$s · %2$s</string>
+    <string name="sync_unknown">—</string>
+
+    <string name="webdav_url">地址</string>
+    <string name="webdav_user">用户名</string>
+    <string name="webdav_pass">密码</string>
+    <string name="webdav_remote">远端文件</string>
+    <string name="webdav_url_hint">http://192.168.1.10:5005/</string>
+    <string name="webdav_user_hint">你的 NAS 账号</string>
+    <string name="webdav_pass_hint">你的 NAS 密码</string>
+    <string name="webdav_remote_hint">EinkMemo/notes.json</string>
+    <string name="webdav_test">测试连接</string>
+    <string name="webdav_untested">未测试</string>
+    <string name="webdav_save">保存</string>
+
+    <string name="archive_empty">暂无归档</string>
+    <string name="archive_restore">还原为未完成</string>
+    <string name="archive_delete">永久删除</string>
+
+    <string name="about_line">版本 %1$s · 墨水屏极简便签</string>
+    <string name="about_font">像素字体：Fusion Pixel Font · SIL OFL 1.1</string>
+
+    <string name="help_ops_title">操作说明</string>
+    <string-array name="help_ops_lines">
+        <item>右滑条目：划掉完成；再右滑取消</item>
+        <item>点击或左滑条目：编辑文本</item>
+        <item>点条目前的小图：选中后再点任意一条，交换两条位置</item>
+        <item>右下 +：新增；键盘上回车保存并继续输入</item>
+        <item>翻页：上下滑，或使用设备的翻页 / 音量键</item>
+        <item>左下 ⋯：进入设置（WebDAV、归档、帮助）</item>
+        <item>已完成不会自动消失；在设置里「归档已完成」后移入归档记录</item>
+        <item>归档记录里点击条目，可还原为未完成或永久删除</item>
+        <item>字体：设置 → 字体，可在系统字体 / 像素字体之间切换</item>
+    </string-array>
+    <string name="help_sync_title">同步配置</string>
+    <string-array name="help_sync_lines">
+        <item>设置 → WebDAV 设置：填写 NAS 的 WebDAV 地址</item>
+        <item>地址示例：http://192.168.1.10:5005/</item>
+        <item>再填用户名、密码；远端文件默认 EinkMemo/notes.json，目录会自动创建</item>
+        <item>先点「测试连接」，成功后再点「保存」</item>
+        <item>设置 → 立即同步：手动同步，启动 App 时不会自动同步</item>
+        <item>如果远端和本机都改过，会弹出选择，二选一覆盖</item>
+    </string-array>
+
+    <string name="webdav_testing">测试中…</string>
+    <string name="webdav_test_ok">测试成功</string>
+    <string name="webdav_test_fail_http">失败：HTTP %1$d</string>
+    <string name="webdav_test_fail_auth">失败：认证失败（HTTP %1$d）</string>
+    <string name="webdav_test_fail_empty">失败：地址为空</string>
+    <string name="webdav_test_fail_scheme">失败：地址需以 http:// 或 https:// 开头</string>
+    <string name="webdav_test_fail_generic">失败：%1$s</string>
+</resources>

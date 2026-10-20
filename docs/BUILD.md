@@ -1,78 +1,69 @@
-# 构建说明（ElinkMemo v0.1）
+# Build & Release
 
-## 工具链（已安装在本仓库 tools/ 下）
+## Requirements
 
-| 组件 | 路径 / 版本 |
-|---|---|
-| JDK | `tools/jdk17/Contents/Home`（Temurin 17.0.20.1） |
-| Gradle | `tools/gradle-8.7/bin/gradle` |
-| Android SDK | `tools/android-sdk`（platforms;android-34、build-tools;34.0.0、platform-tools） |
-| SDK 的 ANDROID_USER_HOME | `tools/android-user-home`（避免写 ~/.android） |
-| Gradle 缓存 | `tools/gradle-home` |
-| 本地 SDK 声明 | `android/local.properties` 指向 `tools/android-sdk` |
+- JDK 17
+- Android SDK with `platforms;android-34` and `build-tools;34.0.0`
+- The Gradle wrapper is included, so no separate Gradle installation is needed
 
-## 构建 debug APK
+## Build the debug APK
 
-优先用仓库内的 Gradle wrapper（CI 也走这条路径，需 JDK 17、联网下载 Gradle 8.7）：
+```bash
+cd android
+./gradlew assembleDebug
+```
 
-    cd android
-    ./gradlew assembleDebug
+Output: `android/app/build/outputs/apk/debug/app-debug.apk`.
 
-本机离线工具链（已装在 tools/，无需下载）：
+To sign a local build with the project keystore (same certificate as the published APKs):
 
-    cd android
-    JAVA_HOME=../tools/jdk17/Contents/Home \
-    ANDROID_HOME=../tools/android-sdk \
-    ANDROID_USER_HOME=../tools/android-user-home \
-    GRADLE_USER_HOME=../tools/gradle-home \
-    ./gradlew --no-daemon --console=plain assembleDebug
+```bash
+cd android
+EINKMEMO_DEBUG_KEYSTORE=/path/to/keystore.jks ./gradlew assembleDebug
+```
 
-产物：`android/app/build/outputs/apk/debug/app-debug.apk`
+Without `EINKMEMO_DEBUG_KEYSTORE`, Gradle uses the default `~/.android/debug.keystore`, which has a different certificate.
 
-## 发布（GitHub Releases，APK 不入库）
+## Versioning
 
-### 自动（推荐）：推 tag 触发 GitHub Actions
+EinkMemo follows semantic versioning:
 
-    git tag -a v0.7 -m "ElinkMemo v0.7"
-    git push origin v0.7
+- `versionName` = `X.Y.Z` (no `v` prefix)
+- git tag and GitHub Release = `vX.Y.Z`
+- `versionCode` = `X*10000 + Y*100 + Z` (monotonically increasing)
 
-工作流 `.github/workflows/release.yml` 会：JDK 17 + Android SDK → `./gradlew assembleDebug` → 生成 Release 并上传 `ElinkMemo-<版本>-debug.apk`。Release 说明优先读取 `docs/releases/v0.7.md`，不存在时自动生成。
+Update `versionCode` / `versionName` in `android/app/build.gradle.kts` and add release notes at `docs/releases/vX.Y.Z.md`.
 
-### 签名说明
+## Release
 
-- 项目签名 keystore：`tools/signing/elinkmemo-debug.keystore`（debug 证书，SHA-256 指纹 `b3:37:bc:c8:92:bd:cb:49:12:64:0a:bd:f1:ac:72:2b:f8:36:45:09:dd:92:a3:05:87:51:7d:e7:36:bd:12:c2`）
-- CI 使用仓库 Secret `ANDROID_DEBUG_KEYSTORE_BASE64` 保存同一文件的 Base64，构建前恢复到 `$RUNNER_TEMP/debug.keystore` 并通过 `ELINKMEMO_DEBUG_KEYSTORE` 传给 Gradle
-- Release APK 均用该证书签名，可覆盖安装、数据不丢；**不要更换 keystore**，否则已安装用户必须卸载重装
-- 本机构建若要与 Release 同签名：
+Push a `vX.Y.Z` tag; the workflow in `.github/workflows/release.yml` builds the APK and creates the GitHub Release:
 
-      cd android
-      ELINKMEMO_DEBUG_KEYSTORE=../tools/signing/elinkmemo-debug.keystore ./gradlew assembleDebug
+```bash
+git tag -a v0.11.0 -m "EinkMemo v0.11.0"
+git push origin v0.11.0
+```
 
-  不指定该变量时走 Android 默认的 `~/.android/debug.keystore`，签名与 Release 不同
-- 请自行备份 `tools/signing/elinkmemo-debug.keystore`（丢失后无法覆盖升级旧安装）
+The workflow uploads `EinkMemo-<version>-debug.apk`. Release notes are read from `docs/releases/vX.Y.Z.md` when present, otherwise generated from commits.
 
-### 手动（本地构建后发布）
+Manual release (after building locally):
 
-    mkdir -p dist
-    cp android/app/build/outputs/apk/debug/app-debug.apk dist/ElinkMemo-0.7-debug.apk
-    gh release create v0.7 dist/ElinkMemo-0.7-debug.apk \
-      --title "ElinkMemo v0.7" --notes-file docs/releases/v0.7.md
+```bash
+mkdir -p dist
+cp android/app/build/outputs/apk/debug/app-debug.apk dist/EinkMemo-0.11.0-debug.apk
+gh release create v0.11.0 dist/EinkMemo-0.11.0-debug.apk \
+  --title "EinkMemo v0.11.0" --notes-file docs/releases/v0.11.0.md
+```
 
-`dist/` 已在 .gitignore 中忽略；Release 资产由 `gh release create` 上传。
+`dist/` is git-ignored; APKs are distributed only through GitHub Releases.
 
-## 版本参数
+## Signing
 
-- applicationId `com.elinkmemo.app`，versionName `0.7`，versionCode 7
-- compileSdk 34 / targetSdk 30 / minSdk 26（Leaf2 是 Android 11 = API 30）
-- 依赖：Compose BOM 2024.06.00、Kotlin 1.9.24、AGP 8.5.2、OkHttp 4.12.0
+- Published APKs are signed with the project debug certificate (SHA-256 `b337bcc8…bd12c2`), stored as the repository secret `ANDROID_DEBUG_KEYSTORE_BASE64`.
+- Keep this keystore stable: changing it breaks upgrades for existing installs (users would have to uninstall and reinstall).
+- `applicationId` intentionally remains `com.elinkmemo.app` for upgrade compatibility even though the app is now named EinkMemo. The storage prefs and Keystore aliases also keep their original names so existing notes and WebDAV credentials survive the rename.
 
-## 安装
+## Stack
 
-- `adb install -r app-debug.apk`（需设备开 USB 调试）
-- 或把 APK 拷到设备上点击安装（允许「安装未知应用」）
-
-## 与规格的偏差（v0.1）
-
-- 凭据未用 Keystore（v0.2）
-- 明文 HTTP 全局放行（内网自用；v0.2 白名单）
-- 未接 Onyx SDK，保底刷新靠系统
+- Kotlin 1.9.24, Jetpack Compose (BOM 2024.06.00), AGP 8.5.2
+- OkHttp 4.12.0
+- compileSdk 34 / targetSdk 30 / minSdk 26

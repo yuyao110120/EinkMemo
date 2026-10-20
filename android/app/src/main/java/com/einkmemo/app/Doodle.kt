@@ -1,4 +1,4 @@
-package com.elinkmemo.app
+package com.einkmemo.app
 
 import android.graphics.Paint
 import androidx.compose.foundation.Canvas

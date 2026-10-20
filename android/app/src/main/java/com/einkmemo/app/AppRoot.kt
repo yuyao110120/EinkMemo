@@ -1,4 +1,4 @@
-package com.elinkmemo.app
+package com.einkmemo.app
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background

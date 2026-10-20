@@ -20,3 +20,4 @@ tools/
 tools/testdav-root/
 # 发布产物走 GitHub Releases，不入库
 dist/
+.agents/

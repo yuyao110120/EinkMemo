@@ -1,6 +1,6 @@
-# AGENTS.md — ElinkMemo 协作规则与项目备忘
+# AGENTS.md — EinkMemo 协作规则与项目备忘
 
-本文件是给后续 agent 会话的**项目记忆**。开始工作前先读这里，再读 `README.md`、`docs/SPEC.md`、`docs/BUILD.md`。
+本文件是给后续 agent 会话的**项目记忆**。开始工作前先读这里，再读 `README.md`（英文主版本）/ `README.zh-CN.md`、`docs/SPEC.md`、`docs/BUILD.md`。
 
 ## 所有者规则（2026-10-20 起，优先级最高）
 
@@ -8,7 +8,7 @@
 - `versionName` 用三段式 `X.Y.Z`（不带 v），如 `0.11.0`；git tag 与 GitHub Release 用 `vX.Y.Z`，如 `v0.11.0`。
 - `versionCode` 用 `X*10000 + Y*100 + Z`，保证单调递增（例：`0.11.0` → `1100`，`0.11.1` → `1101`）。
 - 版本号在 `android/app/build.gradle.kts` 修改；Release 说明放 `docs/releases/vX.Y.Z.md`（CI 自动读取）。
-- 当前 `v0.10` 是规则生效前的两段版本号，保持不动；从下一个版本起一律三段式。
+- 当前 `v0.10` 是规则生效前的两段版本号；从 `v0.11.0` 起一律三段式（含改名后的首个版本）。
 
 ### 2. 任何改动必须先由所有者确认，再 push / release
 - 未得到所有者明确确认（例如「确认」「可以推送」「发布吧」）之前，**禁止** `git push`、打 tag、创建或更新 GitHub Release。
@@ -17,16 +17,17 @@
 
 ### 3. 使用 git worktree
 - 功能/修复在独立 worktree + 分支中进行，不直接修改主 checkout。
-- 可用 `create_worktree` 工具（分支名如 `feat/swap-reorder`、`fix/hint-copy`），或 `git worktree add ../ElinkMemo-<name> -b <branch>`。
+- 可用 `create_worktree` 工具（分支名如 `feat/swap-reorder`、`fix/hint-copy`），或 `git worktree add <path> -b <branch>`。
 - 确认后再合并回 `main`（默认 fast-forward 或 `--no-ff`），然后 push / 打 tag / 发布；完成后清理 worktree。
 - 例外：本次 `AGENTS.md` 规则文件为即时生效，直接在主 checkout 本地提交（未 push）。
 
 ## 项目速览
 
-- 墨水屏极简便签/待办 App，目标设备文石 Boox Leaf2（7 英寸 / 300ppi / Android 11 / arm64-v8a），Kotlin + Jetpack Compose 原生实现。
-- 仓库：https://github.com/yuyao110120/ElinkMemo（public，默认分支 `main`）
-- 设计约束：严格 1-bit（纯黑/白，唯一灰 #808080 仅用于已完成文字）；10 条/页分页；底栏 40dp；二级页行高 64dp；无动画/圆角/阴影。
-- 已有功能：右滑划掉、点击/左滑编辑、`+` 连续新增、手动 WebDAV 同步、Keystore 加密凭据、归档、系统/像素字体切换、每条前像素小图、点小图选中后点另一条交换位置。
+- 墨水屏极简便签/待办 App，面向通用 Android 墨水屏设备（minSdk 26，自适应分辨率与横竖屏），Kotlin + Jetpack Compose 原生实现。
+- 仓库：https://github.com/yuyao110120/EinkMemo（public，默认分支 `main`；原名 ElinkMemo，重命名后旧链接会重定向）
+- 设计约束：严格 1-bit（纯黑/白，唯一灰 #808080 仅用于已完成文字）；每页 3–10 行自适应分页；底栏 40dp；二级页行高 64dp；无动画/圆角/阴影。
+- 已有功能：右滑划掉、点击/左滑编辑、`+` 连续新增、手动 WebDAV 同步、Keystore 加密凭据、归档、系统/像素字体切换、每条前像素小图、点小图选中后点另一条交换位置、中英双语、多分辨率/横竖屏自适应。
+- 应用展示名 EinkMemo；`applicationId` 仍为 `com.elinkmemo.app`（保持升级兼容），代码 namespace 为 `com.einkmemo.app`。
 - 原型与冻结规格：`prototype/`、`docs/SPEC.md`；调研：`docs/research/`。
 
 ## 构建 / 测试
@@ -36,7 +37,7 @@
     cd android
     JAVA_HOME=../tools/jdk17/Contents/Home \
     GRADLE_USER_HOME=../tools/gradle-home \
-    ELINKMEMO_DEBUG_KEYSTORE=../tools/signing/elinkmemo-debug.keystore \
+    EINKMEMO_DEBUG_KEYSTORE=../tools/signing/elinkmemo-debug.keystore \
     ./gradlew --no-daemon assembleDebug
 
 模拟器（AVD `elinktest`，无窗口）：
@@ -46,13 +47,13 @@
     tools/android-sdk/emulator/emulator -avd elinktest -no-window -no-audio -no-boot-anim \
       -no-snapshot -gpu swiftshader_indirect -no-metrics
 
-真机 Leaf2：USB + USB 调试，`adb devices` 确认 serial（常见为 `27755393`），用 `adb -s <serial> install -r ...`。截图可用 `adb shell screencap -p /sdcard/x.png && adb pull`。
+真机：Android 设备开 USB 调试后 `adb devices` 确认 serial，用 `adb -s <serial> install -r ...`。截图可用 `adb shell screencap -p /sdcard/x.png && adb pull`。
 
 ## 发布流程（仅在所有者确认后执行）
 
 1. 改 `versionCode` / `versionName`（三段式），新增 `docs/releases/vX.Y.Z.md`。
 2. `git push origin main`。
-3. `git tag -a vX.Y.Z -m "ElinkMemo vX.Y.Z" && git push origin vX.Y.Z`。
+3. `git tag -a vX.Y.Z -m "EinkMemo vX.Y.Z" && git push origin vX.Y.Z`。
 4. `.github/workflows/release.yml` 自动构建 APK 并创建 Release（说明读取 `docs/releases/vX.Y.Z.md`）。
 5. 验证 Release 资产：versionCode/versionName、证书 SHA-256 `b337bcc8…bd12c2`、下载 200。
 

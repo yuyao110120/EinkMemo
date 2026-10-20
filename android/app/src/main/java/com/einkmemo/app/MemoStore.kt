@@ -1,4 +1,4 @@
-package com.elinkmemo.app
+package com.einkmemo.app
 
 import android.content.Context
 import android.content.SharedPreferences
@@ -54,9 +54,11 @@ data class SyncConflict(
 )
 
 class MemoStore(context: Context) {
+    // 存储标识保持旧名，避免升级后丢失现有笔记（与展示名无关）
     private val prefs: SharedPreferences = context.getSharedPreferences("elinkmemo", Context.MODE_PRIVATE)
+    private val appContext = context.applicationContext
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
-    private val client = WebDavClient()
+    private val client = WebDavClient(context)
     private val secure = SecureCredentials(context)
 
     var items by mutableStateOf(loadItems())
@@ -80,6 +82,8 @@ class MemoStore(context: Context) {
 
     var screen by mutableStateOf(Screen.Main)
     var page by mutableStateOf(0)
+    var rowsPerPage by mutableStateOf(PAGE_SIZE)
+        private set
     var editing by mutableStateOf<Editing?>(null)
     var selectedArchiveId by mutableStateOf<String?>(null)
     var seenHint by mutableStateOf(prefs.getBoolean(K_SEEN_HINT, false))
@@ -96,7 +100,7 @@ class MemoStore(context: Context) {
     val archivedItems: List<NoteItem>
         get() = items.filter { it.archivedAt != null }.sortedByDescending { it.archivedAt }
     val pageCount: Int
-        get() = maxOf(1, (activeItems.size + PAGE_SIZE - 1) / PAGE_SIZE)
+        get() = maxOf(1, (activeItems.size + rowsPerPage - 1) / rowsPerPage)
     val pendingArchiveCount: Int
         get() = items.count { it.done && it.archivedAt == null }
     val archivedCount: Int
@@ -140,7 +144,7 @@ class MemoStore(context: Context) {
             url = prefs.getString(K_SYNC_URL, "") ?: "",
             user = user,
             pass = pass,
-            remotePath = prefs.getString(K_SYNC_PATH, "ElinkMemo/notes.json") ?: "ElinkMemo/notes.json",
+            remotePath = prefs.getString(K_SYNC_PATH, "EinkMemo/notes.json") ?: "EinkMemo/notes.json",
         )
     }
 
@@ -350,8 +354,16 @@ class MemoStore(context: Context) {
         testResult = ""
     }
 
+    fun updateRowsPerPage(rows: Int) {
+        val next = rows.coerceIn(3, PAGE_SIZE)
+        if (next != rowsPerPage) {
+            rowsPerPage = next
+            if (page > pageCount - 1) page = pageCount - 1
+        }
+    }
+
     fun testConnection() {
-        testResult = "测试中…"
+        testResult = appContext.getString(R.string.webdav_testing)
         val cfg = syncConfig
         scope.launch {
             testResult = withContext(Dispatchers.IO) { client.test(cfg) }
@@ -365,7 +377,7 @@ class MemoStore(context: Context) {
         if (!syncConfig.isConfigured()) {
             lastSyncAt = System.currentTimeMillis()
             lastSyncOk = false
-            lastSyncError = "未配置 WebDAV"
+            lastSyncError = "WebDAV not configured"
             persistSyncMeta()
             return
         }
@@ -428,7 +440,7 @@ class MemoStore(context: Context) {
             }
             is SyncOutcome.Conflict -> {
                 conflict = SyncConflict(outcome.items, outcome.remoteRevision)
-                lastSyncError = "存在同步冲突"
+                lastSyncError = "Sync conflict"
                 persistSyncMeta()
             }
         }
@@ -444,7 +456,7 @@ class MemoStore(context: Context) {
         conflict ?: return
         conflict = null
         if (!syncConfig.isConfigured()) {
-            recordFailure("未配置 WebDAV")
+            recordFailure("WebDAV not configured")
             return
         }
         syncing = true
@@ -461,7 +473,7 @@ class MemoStore(context: Context) {
             }
             syncing = false
             result.onSuccess { markSuccess(it, it) }
-                .onFailure { recordFailure(it.message ?: "写入远端失败") }
+                .onFailure { recordFailure(it.message ?: "Failed to write remote") }
         }
     }
 
@@ -479,7 +491,7 @@ class MemoStore(context: Context) {
         val obj = try {
             JSONObject(json)
         } catch (e: Exception) {
-            throw SyncException("远端内容不是有效 JSON")
+            throw SyncException("Remote content is not valid JSON")
         }
         val arr = obj.optJSONArray("items") ?: JSONArray()
         val list = (0 until arr.length()).mapNotNull { i ->

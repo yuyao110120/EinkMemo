@@ -1,6 +1,6 @@
 # Third-Party Notices
 
-本项目（ElinkMemo）使用以下第三方资源，随 APK 一并分发：
+本项目（EinkMemo）使用以下第三方资源，随 APK 一并分发：
 
 ## Fusion Pixel Font（缝合像素字体）
 

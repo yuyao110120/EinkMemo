@@ -1,4 +1,4 @@
-package com.elinkmemo.app
+package com.einkmemo.app
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
@@ -50,6 +50,8 @@ import androidx.compose.ui.input.pointer.positionChange
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.res.dimensionResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextLayoutResult
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
@@ -68,6 +70,8 @@ import java.time.Instant
 import java.time.LocalDate
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
+import java.time.format.FormatStyle
+import java.util.Locale
 import kotlin.math.abs
 
 val InkBlack = Color(0xFF000000)
@@ -94,14 +98,17 @@ fun systemStatusBarHeight(): Dp {
 }
 
 fun fmtTime(ms: Long): String =
-    Instant.ofEpochMilli(ms).atZone(ZoneId.systemDefault()).format(DateTimeFormatter.ofPattern("HH:mm"))
+    Instant.ofEpochMilli(ms).atZone(ZoneId.systemDefault())
+        .format(DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT).withLocale(Locale.getDefault()))
 
 fun dayKey(ms: Long): String =
     Instant.ofEpochMilli(ms).atZone(ZoneId.systemDefault()).toLocalDate().toString()
 
 fun fmtDay(key: String): String {
     val date = LocalDate.parse(key)
-    return date.monthValue.toString() + "月" + date.dayOfMonth.toString() + "日"
+    return date.format(
+        DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM).withLocale(Locale.getDefault())
+    )
 }
 
 @Composable
@@ -165,7 +172,7 @@ fun ClickRow(
 @Composable
 fun NavRow(onClick: () -> Unit) {
     ClickRow(onClick = onClick) {
-        InkText("← 返回", 20.sp, Modifier.padding(horizontal = 22.dp))
+        InkText(stringResource(R.string.nav_back), 20.sp, Modifier.padding(horizontal = 22.dp))
     }
 }
 
@@ -239,7 +246,7 @@ fun FieldRow(
                 .padding(horizontal = 22.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            InkText(label, 16.sp, Modifier.width(72.dp))
+            InkText(label, 16.sp, Modifier.width(dimensionResource(R.dimen.webdav_label_width)))
             Box(
                 Modifier
                     .weight(1f)
@@ -343,13 +350,13 @@ fun BottomBar(store: MemoStore, barHeight: Dp) {
             ) { MoreIcon(iconSize) }
             if (store.swapId != null) {
                 InkText(
-                    "点另一条交换",
+                    stringResource(R.string.swap_hint),
                     (barHeight.value * 0.45f).coerceIn(9f, 13f).sp,
                     Modifier.align(Alignment.Center),
                 )
             } else if (store.pageCount > 1) {
                 InkText(
-                    (store.page + 1).toString() + "/" + store.pageCount,
+                    stringResource(R.string.page_indicator, store.page + 1, store.pageCount),
                     (barHeight.value * 0.45f).coerceIn(9f, 13f).sp,
                     Modifier.align(Alignment.Center),
                 )
@@ -381,7 +388,7 @@ fun FailLine(onClick: () -> Unit) {
                 .clickable(interactionSource = interaction, indication = null, onClick = onClick),
             contentAlignment = Alignment.Center,
         ) {
-            InkText("同步失败 · 点此查看", 13.sp)
+            InkText(stringResource(R.string.sync_fail_line), 13.sp)
         }
     }
 }
@@ -435,7 +442,10 @@ fun InputBar(store: MemoStore) {
             ) {
                 if (text.isEmpty()) {
                     InkText(
-                        if (editing.mode == EditMode.Add) "添加一条…" else "修改…",
+                        stringResource(
+                            if (editing.mode == EditMode.Add) R.string.input_hint_add
+                            else R.string.input_hint_edit
+                        ),
                         20.sp,
                         color = InkGray,
                     )
@@ -480,10 +490,10 @@ fun HintOverlay() {
                 .padding(horizontal = 28.dp, vertical = 18.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            InkText("右滑划掉", 20.sp)
-            InkText("点击编辑", 20.sp)
-            InkText("点小图选中 · 再点一条换位", 20.sp)
-            InkText("上下滑或翻页键翻页", 20.sp)
+            InkText(stringResource(R.string.hint_swipe_off), 20.sp)
+            InkText(stringResource(R.string.hint_tap_edit), 20.sp)
+            InkText(stringResource(R.string.hint_swap), 20.sp)
+            InkText(stringResource(R.string.hint_turn_page), 20.sp)
         }
     }
 }
@@ -492,13 +502,13 @@ fun HintOverlay() {
 fun ConflictOverlay(store: MemoStore) {
     Column(Modifier.fillMaxSize().background(InkWhite)) {
         Spacer(Modifier.height(72.dp))
-        InkText("同步冲突", 28.sp, Modifier.padding(horizontal = 22.dp))
+        InkText(stringResource(R.string.conflict_title), 28.sp, Modifier.padding(horizontal = 22.dp))
         Spacer(Modifier.height(12.dp))
-        InkText("远端和本机都有修改，选择保留哪一份：", 16.sp, Modifier.padding(horizontal = 22.dp))
+        InkText(stringResource(R.string.conflict_body), 16.sp, Modifier.padding(horizontal = 22.dp))
         Spacer(Modifier.weight(1f))
-        ButtonRow("保留本机（覆盖远端）") { store.resolveConflictKeepLocal() }
-        ButtonRow("保留远端（覆盖本机）") { store.resolveConflictKeepRemote() }
-        ButtonRow("取消") { store.cancelConflict() }
+        ButtonRow(stringResource(R.string.conflict_keep_local)) { store.resolveConflictKeepLocal() }
+        ButtonRow(stringResource(R.string.conflict_keep_remote)) { store.resolveConflictKeepRemote() }
+        ButtonRow(stringResource(R.string.cancel)) { store.cancelConflict() }
     }
 }
 

@@ -1,4 +1,4 @@
-package com.elinkmemo.app
+package com.einkmemo.app
 
 import android.graphics.Paint
 import android.graphics.Rect
@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -37,15 +38,19 @@ fun MainScreen(store: MemoStore) {
         Box(Modifier.weight(1f).fillMaxWidth()) {
             BoxWithConstraints(Modifier.fillMaxSize()) {
                 val density = LocalDensity.current
-                val rowHeight = maxHeight / PAGE_SIZE.toFloat()
+                // 行高保持在可读范围（≥56dp），行数随分辨率/横竖屏自适应（3–10 行/页）
+                val desiredRows = (maxHeight.value / 56f).toInt().coerceIn(3, PAGE_SIZE)
+                LaunchedEffect(desiredRows) { store.updateRowsPerPage(desiredRows) }
+                val rows = store.rowsPerPage
+                val rowHeight = maxHeight / rows.toFloat()
                 val rowPx = with(density) { rowHeight.toPx() }
                 val fontPx = rowPx * 0.40f
                 val fontSp = with(density) {
                     (fontPx / (density.density * density.fontScale)).sp
                 }
                 val all = store.activeItems
-                val start = store.page * PAGE_SIZE
-                val pageItems = all.drop(start).take(PAGE_SIZE)
+                val start = store.page * rows
+                val pageItems = all.drop(start).take(rows)
                 Column(Modifier.fillMaxSize()) {
                     pageItems.forEachIndexed { index, item ->
                         NoteRow(

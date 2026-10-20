@@ -1,152 +1,76 @@
-# ElinkMemo
+# EinkMemo
 
-墨水屏极简便签 / 待办。目标设备：文石 Boox Leaf2（7 英寸 / 1680×1264 / 300ppi / Android 11）。
+**Minimal 1-bit notes for e-ink screens.**
 
-- 主页面：无标题栏，固定 10 条/页，右滑划掉、左滑或点击编辑、+ 连续新增，纯黑白零动画
-- 已完成原地保留（删除线 + 灰），设置页手动「归档已完成」，归档记录可还原 / 永久删除
-- 手动 WebDAV 同步（单文件 `notes.json`，内网 NAS），启动不自动同步
-- 字体：内置系统字体与像素字体（Fusion Pixel Font），设置内随时切换
-- 每条便签前有像素小图（46×46，1-bit 无抗锯齿）；点小图选中后可点另一条交换位置
-- 技术栈：Kotlin + Jetpack Compose 原生 APK（当前 v0.7，原型验收后实现）
+EinkMemo is a tiny notes / to-do app designed for e-ink readers and any Android device where calm, high-contrast UI matters. No accounts, no ads, no background sync, no animations — just a list that stays out of your way.
 
-## 目录
+[简体中文](README.zh-CN.md)
 
-| 路径 | 内容 |
-|---|---|
-| `prototype/` | 高保真 HTML 交互原型（设计契约，用户已验收） |
-| `android/` | Kotlin + Compose 原生 App 源码 |
-| [GitHub Releases](https://github.com/yuyao110120/ElinkMemo/releases) | 可安装的 debug APK（`dist/` 不入库） |
-| `docs/SPEC.md` | 冻结规格说明书 |
-| `docs/BUILD.md` | 构建 / 安装 / 环境说明 |
-| `docs/research/` | 三份事实调研（墨水屏平台、WebDAV/CORS、Leaf2 与构建链） |
-| `.github/workflows/release.yml` | 推送 `v*` tag 自动构建 APK 并发布 Release |
-| `docs/releases/` | 各版本 Release 说明 |
-| `third_party/` | 第三方字体与许可文本 |
-| `THIRD_PARTY_NOTICES.md` | 第三方资源清单 |
-| `tools/` | 本地工具链（JDK17 / Gradle / Android SDK）与 QA 脚本（不入交付） |
+![EinkMemo main screen](docs/screenshots/en-main.png)
 
-## 安装 APK（Leaf2）
+## Highlights
 
-1. 从 [Releases](https://github.com/yuyao110120/ElinkMemo/releases) 下载 `ElinkMemo-0.6-debug.apk`，传到设备（USB 拷贝 / BooxDrop / 微信文件传输助手均可）
-2. 设备上点击安装；首次需允许「安装未知应用」
-3. 打开 ElinkMemo：右滑划掉、点击编辑、+ 新增、⋯ 设置
-4. 设置 → WebDAV 设置：填 NAS 地址（如 `http://192.168.1.x:5005/`）、用户名、密码、远端文件（默认 `ElinkMemo/notes.json`）→ 测试连接 → 保存
-5. 设置 → 立即同步；首次同步会把本机数据写到远端（远端已有数据且本机也有数据时会弹冲突选择）
+- **Strictly 1-bit**: black and white only, one grey for crossed-off text. No shadows, ripples or transitions — crisp and refresh-friendly on e-ink.
+- **Fits any screen**: rows per page adapt to resolution and orientation (3–10 rows); portrait and landscape both work.
+- **Fast to use**: swipe right to cross off, tap or swipe left to edit, `+` for continuous adding.
+- **Playful detail**: a tiny pixel doodle before every note. Tap the doodle to select a row, then tap another row to swap their positions.
+- **Archive**: finished notes stay in place until you archive them from Settings; restore or delete forever from the archive.
+- **Manual WebDAV sync**: one `notes.json` on your own NAS. If both sides changed, choose which copy to keep.
+- **Keystore-protected credentials**: WebDAV username and password are encrypted with AES-256-GCM via the Android Keystore.
+- **Two fonts**: switch between the system font and the bundled pixel font.
+- **English and 简体中文** UI, following the system language.
 
-USB 调试方式（可选）：
+## Install
 
-    tools/android-sdk/platform-tools/adb install -r ElinkMemo-0.6-debug.apk
+1. Download the latest `EinkMemo-x.y.z-debug.apk` from [Releases](https://github.com/yuyao110120/EinkMemo/releases).
+2. Copy it to your device and open it; allow installing unknown apps if asked.
+3. Launch EinkMemo.
 
-## 本地跑原型
+The APK is debug-signed for sideloading and needs no Google services.
 
-    python3 -m http.server 4173 --bind 0.0.0.0 --directory prototype
+## Gestures
 
-Chrome 打开 http://127.0.0.1:4173/ ，Leaf2 浏览器打开 `http://<Mac 局域网 IP>:4173/`。
+| Action | Result |
+| --- | --- |
+| Swipe right on a row | Cross off / undo |
+| Tap or swipe left on a row | Edit its text |
+| Bottom-right `+` | Add a note (Enter keeps adding) |
+| Tap the doodle before a row | Select it, then tap another row to swap |
+| Swipe up / down, page or volume keys | Turn page |
+| Bottom-left `⋯` | Settings (WebDAV, archive, fonts, help) |
 
-## 构建与发布
+## WebDAV sync
 
-构建（需 JDK 17，首次会下载 Gradle 8.7；本机离线工具链见 [docs/BUILD.md](docs/BUILD.md)）：
+1. Settings → WebDAV: enter the address, username and password. The remote file defaults to `EinkMemo/notes.json`.
+2. Tap **Test connection**, then **Save**.
+3. Settings → **Sync now**. Sync is manual only; the app never touches the network on launch.
 
-    cd android && ./gradlew assembleDebug
+## Fonts
 
-发布走 GitHub Releases（APK 不入库）。**推送 tag 后 GitHub Actions 自动构建并创建 Release**：
+Settings → Font switches between the system font and [Fusion Pixel Font](https://github.com/TakWolf/fusion-pixel-font) (12px proportional, SIL OFL 1.1).
 
-    git tag -a v0.7 -m "ElinkMemo v0.7" && git push origin v0.7
+| Pixel font | Selection mode |
+| --- | --- |
+| ![Pixel font](docs/screenshots/en-pixel.png) | ![Select to swap](docs/screenshots/en-swap.png) |
 
-如果 `docs/releases/v0.7.md` 存在，Release 会用它作为说明；否则自动生成。手动发布（本地构建后）也可：
+## Build
 
-    gh release create v0.7 dist/ElinkMemo-0.7-debug.apk --title "ElinkMemo v0.7" --notes-file docs/releases/v0.7.md
+Requires JDK 17 and Android SDK 34. The Gradle wrapper is included:
 
+```bash
+cd android
+./gradlew assembleDebug
+```
 
-## v0.10 变更（2026-10-20）
+Output: `android/app/build/outputs/apk/debug/app-debug.apk`. See [docs/BUILD.md](docs/BUILD.md) for the offline toolchain and the release workflow.
 
-1. 首次启动提示补充「点小图选中 · 再点一条换位」操作说明
-2. 帮助页操作说明调整顺序并确认包含小图交换位置说明
+## Documentation
 
-## v0.9 变更（2026-10-20）
+- [Specification](docs/SPEC.md) — interaction and visual contract
+- [Build & release](docs/BUILD.md) — toolchain, signing, GitHub Actions
+- [Prototype](prototype/) — the original HTML design prototype
+- [Third-party notices](THIRD_PARTY_NOTICES.md) — bundled fonts and licenses
 
-1. 点条目前的像素小图可选中该条（整行反白，底栏提示「点另一条交换」）
-2. 选中后再点任意一条，两条交换位置；再点小图或按返回键取消
-3. 选中期间禁用划掉/编辑/翻页手势，避免误操作
+## License
 
-## v0.8 变更（2026-10-20）
-
-1. 每条便签前增加 46×46 像素小图：直接解析用户提供的 makebead SVG，1-bit、关闭抗锯齿，按行高整数倍放大并垂直居中
-2. 完成项的图标与文字一起变灰；图标到屏幕、图标到文字的视觉间距统一为 12dp（等距）
-3. 新增 `Doodle.kt`（SVG path 解析 + 原生 Canvas 整数像素对齐）
-
-## v0.7 变更（2026-10-20）
-
-1. 新增像素字体：[Fusion Pixel Font](https://github.com/TakWolf/fusion-pixel-font) 12px proportional（zh_hans 变体，SIL OFL 1.1），随 APK 内嵌
-2. 设置新增「字体」项：系统字体 / 像素字体一键切换并持久化；影响主列表、二级页、输入框与关于页
-3. 行内光学居中按当前字体重新计算；关于页增加字体署名，帮助页补充切换说明
-4. 统一发布签名 keystore：v0.7 与设备已装 v0.6 使用同一 debug 证书，可直接覆盖升级、数据保留
-
-## v0.6 变更（2026-10-18）
-
-1. WebDAV 用户名/密码改为 Android Keystore 加密存储：AES-256-GCM 密钥保存在 AndroidKeyStore（密钥不出安全区），SharedPreferences 中只有 IV+密文 blob
-2. 从 v0.5 升级时自动迁移：首次启动检测旧明文 sync_user / sync_pass，加密写入后删除明文
-3. URL / 远端路径仍明文存于私有 SharedPreferences（非敏感）；其它功能与 UI 未改动
-
-## v0.5 变更（2026-10-18）
-
-1. 关于页版本号改为读取构建产物（BuildConfig.VERSION_NAME），不再手写，后续版本自动同步；本次显示 0.5
-
-## v0.4 变更（2026-10-18）
-
-1. 底部功能栏高度由 20dp 调整为 40dp（图标 24dp，页码 13sp）
-2. 帮助页经真机确认无问题，未改动
-
-## v0.3 变更（2026-10-18）
-
-1. 首次启动提示增加翻页说明（上下滑或翻页键翻页）
-2. 设置新增「帮助」页：操作说明 + 同步配置说明；关于页精简为名称 / 版本两行
-3. 底部功能栏高度固定为 20dp
-
-## v0.2 变更（2026-10-18）
-
-1. 底部功能栏高度改为等于系统状态栏高度，图标与页码按比例缩小
-2. 键盘弹出改为 `adjustResize`：列表在剩余空间内等比缩放，不再被整体顶出屏幕
-3. WebDAV 配置字段增加占位示例文字（地址 / 账号 / 密码）
-4. App 图标改为简笔便签线稿（折角 + 三行横线）
-5. 实体翻页键兼容范围扩大：PAGE_UP/DOWN、音量键、方向键；未命中的按键会打 `ElinkMemoKey` 日志便于真机排查
-
-## 已知限制（v0.7）
-
-- 允许明文 HTTP（仅适合内网自用；后续版本收窄为 network security config 白名单）
-- 签名固定为项目 keystore（见 [docs/BUILD.md](docs/BUILD.md)）；更换签名会导致已安装版本无法覆盖升级
-- 实体翻页键：Leaf2 若按了没反应，请把 Boox 实体键映射改成「翻页键」或「音量键」再试；仍未触发可用 `adb logcat -s ElinkMemoKey` 抓按键码发我
-- 未接 Onyx 私有 SDK，App 内无法强制整页刷新（依赖翻页/系统整刷；真机残影明显再补）
-- 冲突处理是极简二选一（保留本机 / 保留远端），不做条目级合并
-
-## 第三方资源
-
-- 像素字体：[Fusion Pixel Font](https://github.com/TakWolf/fusion-pixel-font)（12px proportional · zh_hans · 2026.10.16 版），SIL Open Font License 1.1
-- 许可文本：`third_party/fusion-pixel-font/`（含上游字体 OFL 文本）；APK 内同时以 assets 附带，详见 [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)
-
-## 冒烟测试（Android 11 模拟器，2026-10-18）
-
-在同一台 Mac 的 Android 11 模拟器（1080×1920）上安装 APK 并逐项验证，全部通过、无崩溃：
-
-- 首次启动、首启提示、纯黑白渲染
-- 连续新增 12 条、单页 10 条分页、页码 1/2、2/2
-- 实体翻页键（PAGE_UP = keycode 92）翻页
-- 右滑划掉（删除线 + 灰）、点击/左滑编辑
-- 设置页、WebDAV 表单、测试连接（真实 HTTP 请求）
-- 真实 WebDAV 手动同步：首次上传、远端修改后拉取、双向修改弹出冲突选择、「保留本机」覆盖
-- 归档已完成 → 归档记录 → 还原为未完成
-- 同步失败提示行（未配置时）
-- 强杀重启后数据与完成状态持久化
-- v0.2：状态栏等高底栏、键盘弹出列表等比缩放、WebDAV 占位示例、简笔便签图标、音量/方向/翻页键翻页
-- v0.3：首启提示含翻页说明、帮助页、精简关于页
-- v0.4：40dp 底栏（图标/页码重新配比）
-- v0.5：关于页版本号自动读取
-- v0.6：Keystore 加密凭据 + 旧明文自动迁移（模拟器验证：迁移后 prefs 无明文、重启后凭据可解密、真实 WebDAV 同步成功）
-- v0.7：像素字体切换、选择持久化、输入框/二级页/关于页渲染正常、无崩溃
-- v0.8：每条前像素小图渲染正常（系统/像素字体）、等距留白、完成项图标变灰、无崩溃
-- v0.9：点小图选中/取消、点另一条交换位置、返回键取消、选中期间手势禁用，均验证通过
-- v0.10：首启提示与帮助页操作说明更新（含小图换位），界面无溢出
-
-截图见 [docs/screenshots/](docs/screenshots/)。
-
-> 模拟器与 Leaf2 的 DPI/字体渲染不同，真机上的字号、行高、残影、手势手感仍需你实测反馈。
+The app code is released under the [MIT License](LICENSE). Bundled fonts are covered by the SIL Open Font License 1.1; see [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).

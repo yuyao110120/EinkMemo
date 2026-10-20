@@ -36,7 +36,7 @@ jobs:
 
       - name: Build debug APK
         env:
-          ELINKMEMO_DEBUG_KEYSTORE: ${{ runner.temp }}/debug.keystore
+          EINKMEMO_DEBUG_KEYSTORE: ${{ runner.temp }}/debug.keystore
         run: |
           cd android
           chmod +x gradlew
@@ -45,8 +45,8 @@ jobs:
       - name: Prepare release asset
         run: |
           VERSION="${GITHUB_REF_NAME#v}"
-          cp android/app/build/outputs/apk/debug/app-debug.apk "ElinkMemo-${VERSION}-debug.apk"
-          echo "ASSET=ElinkMemo-${VERSION}-debug.apk" >> "$GITHUB_ENV"
+          cp android/app/build/outputs/apk/debug/app-debug.apk "EinkMemo-${VERSION}-debug.apk"
+          echo "ASSET=EinkMemo-${VERSION}-debug.apk" >> "$GITHUB_ENV"
 
       - name: Publish GitHub release
         env:
@@ -54,7 +54,7 @@ jobs:
         run: |
           NOTES="docs/releases/${GITHUB_REF_NAME}.md"
           if [ -f "$NOTES" ]; then
-            gh release create "$GITHUB_REF_NAME" "$ASSET" --title "ElinkMemo ${GITHUB_REF_NAME}" --notes-file "$NOTES"
+            gh release create "$GITHUB_REF_NAME" "$ASSET" --title "EinkMemo ${GITHUB_REF_NAME}" --notes-file "$NOTES"
           else
-            gh release create "$GITHUB_REF_NAME" "$ASSET" --title "ElinkMemo ${GITHUB_REF_NAME}" --generate-notes
+            gh release create "$GITHUB_REF_NAME" "$ASSET" --title "EinkMemo ${GITHUB_REF_NAME}" --generate-notes
           fi

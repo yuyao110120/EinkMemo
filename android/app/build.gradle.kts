@@ -6,25 +6,26 @@ plugins {
 }
 
 android {
-    namespace = "com.elinkmemo.app"
+    namespace = "com.einkmemo.app"
     compileSdk = 34
 
     defaultConfig {
+        // 与旧包名保持一致，保证已安装版本可覆盖升级、数据不丢；对外展示名已改为 EinkMemo
         applicationId = "com.elinkmemo.app"
         minSdk = 26
         targetSdk = 30
-        versionCode = 10
-        versionName = "0.10"
+        versionCode = 1100
+        versionName = "0.11.0"
     }
 
     signingConfigs {
         getByName("debug") {
-            val custom = System.getenv("ELINKMEMO_DEBUG_KEYSTORE")
+            val custom = System.getenv("EINKMEMO_DEBUG_KEYSTORE")
             if (!custom.isNullOrBlank() && File(custom).exists()) {
                 storeFile = File(custom)
-                storePassword = System.getenv("ELINKMEMO_DEBUG_KEYSTORE_PASSWORD") ?: "android"
-                keyAlias = System.getenv("ELINKMEMO_DEBUG_KEY_ALIAS") ?: "androiddebugkey"
-                keyPassword = System.getenv("ELINKMEMO_DEBUG_KEY_PASSWORD") ?: "android"
+                storePassword = System.getenv("EINKMEMO_DEBUG_KEYSTORE_PASSWORD") ?: "android"
+                keyAlias = System.getenv("EINKMEMO_DEBUG_KEY_ALIAS") ?: "androiddebugkey"
+                keyPassword = System.getenv("EINKMEMO_DEBUG_KEY_PASSWORD") ?: "android"
             }
         }
     }

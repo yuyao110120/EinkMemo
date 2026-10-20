@@ -1,4 +1,101 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">ElinkMemo</string>
+    <string name="app_name">EinkMemo</string>
+
+    <!-- common -->
+    <string name="nav_back">← Back</string>
+    <string name="cancel">Cancel</string>
+    <string name="page_indicator">%1$d/%2$d</string>
+
+    <!-- main list -->
+    <string name="swap_hint">Tap another row to swap</string>
+    <string name="sync_fail_line">Sync failed · tap to view</string>
+    <string name="input_hint_add">Add a note…</string>
+    <string name="input_hint_edit">Edit…</string>
+
+    <!-- first-launch hint -->
+    <string name="hint_swipe_off">Swipe right to cross off</string>
+    <string name="hint_tap_edit">Tap to edit</string>
+    <string name="hint_swap">Tap a doodle, then another row to swap</string>
+    <string name="hint_turn_page">Swipe up/down or page keys to turn</string>
+
+    <!-- conflict -->
+    <string name="conflict_title">Sync conflict</string>
+    <string name="conflict_body">Both this device and the remote changed. Choose which copy to keep:</string>
+    <string name="conflict_keep_local">Keep this device (overwrite remote)</string>
+    <string name="conflict_keep_remote">Keep remote (overwrite this device)</string>
+
+    <!-- settings -->
+    <string name="settings_webdav">WebDAV</string>
+    <string name="settings_sync_now">Sync now</string>
+    <string name="settings_archive_done">Archive finished (%1$d)</string>
+    <string name="settings_archive_done_sub">Move crossed-off notes to the archive</string>
+    <string name="settings_archive_records">Archive (%1$d)</string>
+    <string name="settings_font">Font</string>
+    <string name="settings_font_system_sub">System font · tap for pixel</string>
+    <string name="settings_font_pixel_sub">Pixel font · tap for system</string>
+    <string name="settings_help">Help</string>
+    <string name="settings_about">About</string>
+
+    <!-- sync status -->
+    <string name="sync_syncing">Syncing…</string>
+    <string name="sync_never">Not synced yet</string>
+    <string name="sync_ok">success</string>
+    <string name="sync_failed">failed</string>
+    <string name="sync_last">Last sync: %1$s · %2$s</string>
+    <string name="sync_unknown">—</string>
+
+    <!-- webdav screen -->
+    <string name="webdav_url">Address</string>
+    <string name="webdav_user">Username</string>
+    <string name="webdav_pass">Password</string>
+    <string name="webdav_remote">Remote file</string>
+    <string name="webdav_url_hint">http://192.168.1.10:5005/</string>
+    <string name="webdav_user_hint">Your NAS account</string>
+    <string name="webdav_pass_hint">Your NAS password</string>
+    <string name="webdav_remote_hint">EinkMemo/notes.json</string>
+    <string name="webdav_test">Test connection</string>
+    <string name="webdav_untested">Not tested</string>
+    <string name="webdav_save">Save</string>
+
+    <!-- archive -->
+    <string name="archive_empty">No archived notes</string>
+    <string name="archive_restore">Restore</string>
+    <string name="archive_delete">Delete forever</string>
+
+    <!-- about -->
+    <string name="about_line">Version %1$s · Minimal e-ink notes</string>
+    <string name="about_font">Pixel font: Fusion Pixel Font · SIL OFL 1.1</string>
+
+    <!-- help -->
+    <string name="help_ops_title">How to use</string>
+    <string-array name="help_ops_lines">
+        <item>Swipe right on a row: cross it off; swipe right again to undo</item>
+        <item>Tap or swipe left on a row: edit its text</item>
+        <item>Tap the doodle before a row: select it, then tap another row to swap positions</item>
+        <item>Bottom right +: add; press Enter to save and keep adding</item>
+        <item>Turn pages: swipe up/down, or use the device page / volume keys</item>
+        <item>Bottom left ⋯: settings (WebDAV, archive, help)</item>
+        <item>Finished notes stay in place; use Settings → Archive finished to move them to the archive</item>
+        <item>Tap an archived note to restore it or delete it forever</item>
+        <item>Font: Settings → Font switches between system and pixel fonts</item>
+    </string-array>
+    <string name="help_sync_title">Sync setup</string>
+    <string-array name="help_sync_lines">
+        <item>Settings → WebDAV: enter your NAS WebDAV address</item>
+        <item>Example: http://192.168.1.10:5005/</item>
+        <item>Add username and password; the remote file defaults to EinkMemo/notes.json, and directories are created automatically</item>
+        <item>Tap Test connection first; when it succeeds, tap Save</item>
+        <item>Settings → Sync now: manual sync only; the app never syncs automatically on launch</item>
+        <item>If both sides changed, a dialog asks which copy to keep</item>
+    </string-array>
+
+    <!-- network / errors used by test UI -->
+    <string name="webdav_testing">Testing…</string>
+    <string name="webdav_test_ok">Test succeeded</string>
+    <string name="webdav_test_fail_http">Failed: HTTP %1$d</string>
+    <string name="webdav_test_fail_auth">Failed: authentication failed (HTTP %1$d)</string>
+    <string name="webdav_test_fail_empty">Failed: address is empty</string>
+    <string name="webdav_test_fail_scheme">Failed: address must start with http:// or https://</string>
+    <string name="webdav_test_fail_generic">Failed: %1$s</string>
 </resources>

@@ -1,4 +1,4 @@
-package com.elinkmemo.app
+package com.einkmemo.app
 
 import android.os.Bundle
 import android.util.Log
@@ -24,7 +24,7 @@ class MainActivity : ComponentActivity() {
             if (delta != 0 && pageKeyHandler?.invoke(delta) == true) {
                 return true
             }
-            Log.d("ElinkMemoKey", "keyCode=" + event.keyCode + " action=" + event.action)
+            Log.d("EinkMemoKey", "keyCode=" + event.keyCode + " action=" + event.action)
         }
         return super.dispatchKeyEvent(event)
     }

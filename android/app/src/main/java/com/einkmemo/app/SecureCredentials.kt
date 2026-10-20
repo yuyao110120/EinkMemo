@@ -1,4 +1,4 @@
-package com.elinkmemo.app
+package com.einkmemo.app
 
 import android.content.Context
 import android.content.SharedPreferences
@@ -19,6 +19,7 @@ import javax.crypto.spec.GCMParameterSpec
  */
 class SecureCredentials(context: Context) {
     private val prefs: SharedPreferences =
+        // 存储标识与 Keystore alias 保持旧名，升级后才能解开已保存的 WebDAV 凭据
         context.getSharedPreferences("elinkmemo_secure", Context.MODE_PRIVATE)
 
     fun save(user: String, pass: String) {

@@ -1,5 +1,6 @@
-package com.elinkmemo.app
+package com.einkmemo.app
 
+import android.content.Context
 import okhttp3.Credentials
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
@@ -11,7 +12,7 @@ data class SyncConfig(
     val url: String = "",
     val user: String = "",
     val pass: String = "",
-    val remotePath: String = "ElinkMemo/notes.json",
+    val remotePath: String = "EinkMemo/notes.json",
 ) {
     val base: String get() = url.trim().trimEnd('/')
     val fullUrl: String get() = base + "/" + remotePath.trim().trimStart('/')
@@ -32,7 +33,7 @@ sealed class RemoteFetch {
 
 class SyncException(message: String) : Exception(message)
 
-class WebDavClient {
+class WebDavClient(private val context: Context) {
     private val http = OkHttpClient.Builder()
         .connectTimeout(8, TimeUnit.SECONDS)
         .readTimeout(15, TimeUnit.SECONDS)
@@ -89,9 +90,9 @@ class WebDavClient {
     }
 
     fun test(config: SyncConfig): String {
-        if (config.url.isBlank()) return "失败：地址为空"
+        if (config.url.isBlank()) return context.getString(R.string.webdav_test_fail_empty)
         if (!config.url.startsWith("http://") && !config.url.startsWith("https://")) {
-            return "失败：地址需以 http:// 或 https:// 开头"
+            return context.getString(R.string.webdav_test_fail_scheme)
         }
         return try {
             val request = Request.Builder()
@@ -101,13 +102,16 @@ class WebDavClient {
                 .build()
             http.newCall(request).execute().use { resp ->
                 when (resp.code) {
-                    200, 404 -> "测试成功"
-                    401, 403 -> "失败：认证失败（HTTP " + resp.code + "）"
-                    else -> "失败：HTTP " + resp.code
+                    200, 404 -> context.getString(R.string.webdav_test_ok)
+                    401, 403 -> context.getString(R.string.webdav_test_fail_auth, resp.code)
+                    else -> context.getString(R.string.webdav_test_fail_http, resp.code)
                 }
             }
         } catch (e: Exception) {
-            "失败：" + (e.message ?: e.javaClass.simpleName)
+            context.getString(
+                R.string.webdav_test_fail_generic,
+                e.message ?: e.javaClass.simpleName
+            )
         }
     }
 }
