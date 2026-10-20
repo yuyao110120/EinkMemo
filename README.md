@@ -6,6 +6,7 @@
 - 已完成原地保留（删除线 + 灰），设置页手动「归档已完成」，归档记录可还原 / 永久删除
 - 手动 WebDAV 同步（单文件 `notes.json`，内网 NAS），启动不自动同步
 - 字体：内置系统字体与像素字体（Fusion Pixel Font），设置内随时切换
+- 每条便签前有像素小图（46×46，1-bit 无抗锯齿）
 - 技术栈：Kotlin + Jetpack Compose 原生 APK（当前 v0.7，原型验收后实现）
 
 ## 目录
@@ -56,6 +57,12 @@ Chrome 打开 http://127.0.0.1:4173/ ，Leaf2 浏览器打开 `http://<Mac 局�
 
     gh release create v0.7 dist/ElinkMemo-0.7-debug.apk --title "ElinkMemo v0.7" --notes-file docs/releases/v0.7.md
 
+
+## v0.8 变更（2026-10-20）
+
+1. 每条便签前增加 46×46 像素小图：直接解析用户提供的 makebead SVG，1-bit、关闭抗锯齿，按行高整数倍放大并垂直居中
+2. 完成项的图标与文字一起变灰；图标到屏幕、图标到文字的视觉间距统一为 12dp（等距）
+3. 新增 `Doodle.kt`（SVG path 解析 + 原生 Canvas 整数像素对齐）
 
 ## v0.7 变更（2026-10-20）
 
@@ -125,6 +132,7 @@ Chrome 打开 http://127.0.0.1:4173/ ，Leaf2 浏览器打开 `http://<Mac 局�
 - v0.5：关于页版本号自动读取
 - v0.6：Keystore 加密凭据 + 旧明文自动迁移（模拟器验证：迁移后 prefs 无明文、重启后凭据可解密、真实 WebDAV 同步成功）
 - v0.7：像素字体切换、选择持久化、输入框/二级页/关于页渲染正常、无崩溃
+- v0.8：每条前像素小图渲染正常（系统/像素字体）、等距留白、完成项图标变灰、无崩溃
 
 截图见 [docs/screenshots/](docs/screenshots/)。
 

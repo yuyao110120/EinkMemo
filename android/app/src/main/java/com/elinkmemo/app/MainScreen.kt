@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -109,6 +110,13 @@ private fun NoteRow(
         Rect().also { paint.getTextBounds("国", 0, 1, it) }
     }
     var opticalOffset by remember(fontSp, rowPx) { mutableStateOf(0f) }
+    val iconScale = maxOf(1, (rowPx * 0.5f / 46f).roundToInt())
+    val iconSizeDp = with(density) { (46f * iconScale / density.density).dp }
+    // SVG 内左/右留白（3/46、2/46）；让「图标到屏幕」与「图标到文字」的视觉间距相同
+    val visualGap = 12.dp
+    val iconStartDp = (visualGap - iconSizeDp * (3f / 46f)).coerceAtLeast(0.dp)
+    val textGapDp = (visualGap - iconSizeDp * (2f / 46f)).coerceAtLeast(0.dp)
+    val textStart = iconStartDp + iconSizeDp + textGapDp
 
     Box(
         Modifier
@@ -118,6 +126,13 @@ private fun NoteRow(
                 detectRowGestures(onTap, onSwipeRight, onSwipeLeft, onVerticalSwipe)
             }
     ) {
+        NoteDoodle(
+            color = if (item.done) InkGray else InkBlack,
+            modifier = Modifier
+                .align(Alignment.CenterStart)
+                .padding(start = iconStartDp)
+                .size(iconSizeDp),
+        )
         InkText(
             text = item.text,
             fontSize = fontSp,
@@ -136,7 +151,7 @@ private fun NoteRow(
             modifier = Modifier
                 .align(Alignment.CenterStart)
                 .fillMaxWidth()
-                .padding(start = 22.dp, end = 22.dp)
+                .padding(start = textStart, end = 22.dp)
                 .offset { IntOffset(0, opticalOffset.roundToInt()) },
         )
         if (showDivider) {
