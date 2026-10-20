@@ -15,6 +15,8 @@ import org.json.JSONObject
 import java.util.UUID
 
 const val PAGE_SIZE = 10
+const val PREFS_NAME = "einkmemo"
+const val K_LANGUAGE = "language_mode"
 
 private const val K_ITEMS = "items_json"
 private const val K_REVISION = "revision"
@@ -40,9 +42,11 @@ data class NoteItem(
     val updatedAt: Long,
 )
 
-enum class Screen { Main, Settings, WebDav, Archive, About, Help }
+enum class Screen { Main, Settings, WebDav, Archive, About, Help, Language }
 
 enum class FontMode { System, Pixel }
+
+enum class LanguageMode { System, English, Chinese }
 
 enum class EditMode { Add, Edit }
 
@@ -54,7 +58,7 @@ data class SyncConflict(
 )
 
 class MemoStore(context: Context) {
-    private val prefs: SharedPreferences = context.getSharedPreferences("einkmemo", Context.MODE_PRIVATE)
+    private val prefs: SharedPreferences = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
     private val appContext = context.applicationContext
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
     private val client = WebDavClient(context)
@@ -89,6 +93,14 @@ class MemoStore(context: Context) {
         private set
     var fontMode by mutableStateOf(
         if (prefs.getInt(K_FONT_MODE, 0) == 1) FontMode.Pixel else FontMode.System
+    )
+        private set
+    var languageMode by mutableStateOf(
+        when (prefs.getInt(K_LANGUAGE, 0)) {
+            1 -> LanguageMode.English
+            2 -> LanguageMode.Chinese
+            else -> LanguageMode.System
+        }
     )
         private set
     var swapId by mutableStateOf<String?>(null)
@@ -334,6 +346,16 @@ class MemoStore(context: Context) {
     fun toggleFontMode() {
         fontMode = if (fontMode == FontMode.Pixel) FontMode.System else FontMode.Pixel
         prefs.edit().putInt(K_FONT_MODE, if (fontMode == FontMode.Pixel) 1 else 0).apply()
+    }
+
+    fun updateLanguageMode(mode: LanguageMode) {
+        languageMode = mode
+        val value = when (mode) {
+            LanguageMode.System -> 0
+            LanguageMode.English -> 1
+            LanguageMode.Chinese -> 2
+        }
+        prefs.edit().putInt(K_LANGUAGE, value).apply()
     }
 
     // ---------- sync config / test ----------

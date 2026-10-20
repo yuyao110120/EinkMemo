@@ -36,6 +36,11 @@
     <string name="settings_font_pixel_sub">Pixel font · tap for system</string>
     <string name="settings_help">Help</string>
     <string name="settings_about">About</string>
+    <string name="settings_language">Language</string>
+    <string name="language_system">Follow system</string>
+    <string name="language_english">English</string>
+    <string name="language_chinese">简体中文</string>
+    <string name="language_current">Current</string>
 
     <!-- sync status -->
     <string name="sync_syncing">Syncing…</string>
@@ -79,6 +84,7 @@
         <item>Finished notes stay in place; use Settings → Archive finished to move them to the archive</item>
         <item>Tap an archived note to restore it or delete it forever</item>
         <item>Font: Settings → Font switches between system and pixel fonts</item>
+        <item>Language: Settings → Language switches between system, English and 简体中文</item>
     </string-array>
     <string name="help_sync_title">Sync setup</string>
     <string-array name="help_sync_lines">

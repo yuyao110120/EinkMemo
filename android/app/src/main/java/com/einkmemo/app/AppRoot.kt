@@ -69,6 +69,7 @@ fun AppRoot(activity: MainActivity) {
             Screen.Archive -> ArchiveScreen(store)
             Screen.About -> AboutScreen(store)
             Screen.Help -> HelpScreen(store)
+            Screen.Language -> LanguageScreen(store)
         }
         if (!store.seenHint && store.screen == Screen.Main) {
             HintOverlay()

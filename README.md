@@ -18,7 +18,7 @@ EinkMemo is a tiny notes / to-do app designed for e-ink readers and any Android 
 - **Manual WebDAV sync**: one `notes.json` on your own NAS. If both sides changed, choose which copy to keep.
 - **Keystore-protected credentials**: WebDAV username and password are encrypted with AES-256-GCM via the Android Keystore.
 - **Two fonts**: switch between the system font and the bundled pixel font.
-- **English and 简体中文** UI, following the system language.
+- **English and 简体中文** UI: follow the system language, or pick one in Settings → Language.
 
 ## Install
 

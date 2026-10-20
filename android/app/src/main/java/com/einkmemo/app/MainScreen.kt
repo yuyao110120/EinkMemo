@@ -122,8 +122,8 @@ private fun NoteRow(
         Rect().also { paint.getTextBounds("国", 0, 1, it) }
     }
     var opticalOffset by remember(fontSp, rowPx) { mutableStateOf(0f) }
-    val iconScale = maxOf(1, (rowPx * 0.5f / 46f).roundToInt())
-    val iconSizeDp = with(density) { (46f * iconScale / density.density).dp }
+    // 小图随行高连续缩放（不再取整到 46 的整数倍），横屏/小行高时不会显小
+    val iconSizeDp = with(density) { (rowPx * 0.55f / density.density).dp }
     // SVG 内左/右留白（3/46、2/46）；让「图标到屏幕」与「图标到文字」的视觉间距相同
     val visualGap = 12.dp
     val iconStartDp = (visualGap - iconSizeDp * (3f / 46f)).coerceAtLeast(0.dp)

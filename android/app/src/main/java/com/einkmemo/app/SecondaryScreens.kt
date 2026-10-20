@@ -1,5 +1,8 @@
 package com.einkmemo.app
 
+import android.app.Activity
+import android.content.Context
+import android.content.ContextWrapper
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -23,6 +26,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextDecoration
@@ -54,9 +58,56 @@ fun SettingsScreen(store: MemoStore) {
                 else R.string.settings_font_system_sub
             ),
         ) { store.toggleFontMode() }
+        MenuRowTall(
+            stringResource(R.string.settings_language),
+            languageName(store.languageMode),
+        ) { store.screen = Screen.Language }
         MenuRow(stringResource(R.string.settings_help), chevron = true) { store.screen = Screen.Help }
         MenuRow(stringResource(R.string.settings_about), chevron = true) { store.screen = Screen.About }
     }
+}
+
+@Composable
+private fun languageName(mode: LanguageMode): String = stringResource(
+    when (mode) {
+        LanguageMode.System -> R.string.language_system
+        LanguageMode.English -> R.string.language_english
+        LanguageMode.Chinese -> R.string.language_chinese
+    }
+)
+
+private tailrec fun Context.findActivity(): Activity? = when (this) {
+    is Activity -> this
+    is ContextWrapper -> baseContext.findActivity()
+    else -> null
+}
+
+private fun applyLanguage(store: MemoStore, context: Context, mode: LanguageMode) {
+    if (store.languageMode == mode) return
+    store.updateLanguageMode(mode)
+    context.findActivity()?.recreate()
+}
+
+@Composable
+fun LanguageScreen(store: MemoStore) {
+    val context = LocalContext.current
+    Column(Modifier.fillMaxSize().background(InkWhite)) {
+        NavRow { store.screen = Screen.Settings }
+        LanguageOption(stringResource(R.string.language_system), store.languageMode == LanguageMode.System) {
+            applyLanguage(store, context, LanguageMode.System)
+        }
+        LanguageOption(stringResource(R.string.language_english), store.languageMode == LanguageMode.English) {
+            applyLanguage(store, context, LanguageMode.English)
+        }
+        LanguageOption(stringResource(R.string.language_chinese), store.languageMode == LanguageMode.Chinese) {
+            applyLanguage(store, context, LanguageMode.Chinese)
+        }
+    }
+}
+
+@Composable
+private fun LanguageOption(title: String, selected: Boolean, onClick: () -> Unit) {
+    MenuRowTall(title, if (selected) stringResource(R.string.language_current) else "") { onClick() }
 }
 
 @Composable
