@@ -40,7 +40,16 @@
 
 ### 签名说明
 
-CI 通过仓库 Secret `ANDROID_DEBUG_KEYSTORE_BASE64` 恢复本机 `~/.android/debug.keystore`（默认 debug 证书），并以 `ELINKMEMO_DEBUG_KEYSTORE` 传给 Gradle，因此 **Release APK 与本地 `./gradlew assembleDebug` 同签名，可覆盖安装、数据不丢**。若更换 keystore，已安装版本需要先卸载再装。
+- 项目签名 keystore：`tools/signing/elinkmemo-debug.keystore`（debug 证书，SHA-256 指纹 `b3:37:bc:c8:92:bd:cb:49:12:64:0a:bd:f1:ac:72:2b:f8:36:45:09:dd:92:a3:05:87:51:7d:e7:36:bd:12:c2`）
+- CI 使用仓库 Secret `ANDROID_DEBUG_KEYSTORE_BASE64` 保存同一文件的 Base64，构建前恢复到 `$RUNNER_TEMP/debug.keystore` 并通过 `ELINKMEMO_DEBUG_KEYSTORE` 传给 Gradle
+- Release APK 均用该证书签名，可覆盖安装、数据不丢；**不要更换 keystore**，否则已安装用户必须卸载重装
+- 本机构建若要与 Release 同签名：
+
+      cd android
+      ELINKMEMO_DEBUG_KEYSTORE=../tools/signing/elinkmemo-debug.keystore ./gradlew assembleDebug
+
+  不指定该变量时走 Android 默认的 `~/.android/debug.keystore`，签名与 Release 不同
+- 请自行备份 `tools/signing/elinkmemo-debug.keystore`（丢失后无法覆盖升级旧安装）
 
 ### 手动（本地构建后发布）
 

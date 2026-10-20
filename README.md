@@ -62,6 +62,7 @@ Chrome 打开 http://127.0.0.1:4173/ ，Leaf2 浏览器打开 `http://<Mac 局�
 1. 新增像素字体：[Fusion Pixel Font](https://github.com/TakWolf/fusion-pixel-font) 12px proportional（zh_hans 变体，SIL OFL 1.1），随 APK 内嵌
 2. 设置新增「字体」项：系统字体 / 像素字体一键切换并持久化；影响主列表、二级页、输入框与关于页
 3. 行内光学居中按当前字体重新计算；关于页增加字体署名，帮助页补充切换说明
+4. 统一发布签名 keystore：v0.7 与设备已装 v0.6 使用同一 debug 证书，可直接覆盖升级、数据保留
 
 ## v0.6 变更（2026-10-18）
 
@@ -95,6 +96,7 @@ Chrome 打开 http://127.0.0.1:4173/ ，Leaf2 浏览器打开 `http://<Mac 局�
 ## 已知限制（v0.7）
 
 - 允许明文 HTTP（仅适合内网自用；后续版本收窄为 network security config 白名单）
+- 签名固定为项目 keystore（见 [docs/BUILD.md](docs/BUILD.md)）；更换签名会导致已安装版本无法覆盖升级
 - 实体翻页键：Leaf2 若按了没反应，请把 Boox 实体键映射改成「翻页键」或「音量键」再试；仍未触发可用 `adb logcat -s ElinkMemoKey` 抓按键码发我
 - 未接 Onyx 私有 SDK，App 内无法强制整页刷新（依赖翻页/系统整刷；真机残影明显再补）
 - 冲突处理是极简二选一（保留本机 / 保留远端），不做条目级合并
