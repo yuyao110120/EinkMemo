@@ -482,6 +482,7 @@ fun HintOverlay() {
         ) {
             InkText("右滑划掉", 20.sp)
             InkText("点击编辑", 20.sp)
+            InkText("点小图选中 · 再点一条换位", 20.sp)
             InkText("上下滑或翻页键翻页", 20.sp)
         }
     }
