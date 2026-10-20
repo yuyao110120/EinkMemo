@@ -60,7 +60,7 @@ gh release create v0.11.0 dist/EinkMemo-0.11.0-debug.apk \
 
 - Published APKs are signed with the project debug certificate (SHA-256 `b337bcc8…bd12c2`), stored as the repository secret `ANDROID_DEBUG_KEYSTORE_BASE64`.
 - Keep this keystore stable: changing it breaks upgrades for existing installs (users would have to uninstall and reinstall).
-- `applicationId` intentionally remains `com.elinkmemo.app` for upgrade compatibility even though the app is now named EinkMemo. The storage prefs and Keystore aliases also keep their original names so existing notes and WebDAV credentials survive the rename.
+- `applicationId` is `com.einkmemo.app`. Earlier builds used `com.elinkmemo.app`, so they install as a separate app: users migrating from an older build should sync to WebDAV in the old app first, install EinkMemo, then configure WebDAV and sync to restore notes.
 
 ## Stack
 

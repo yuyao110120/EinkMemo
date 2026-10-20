@@ -10,8 +10,7 @@ android {
     compileSdk = 34
 
     defaultConfig {
-        // 与旧包名保持一致，保证已安装版本可覆盖升级、数据不丢；对外展示名已改为 EinkMemo
-        applicationId = "com.elinkmemo.app"
+        applicationId = "com.einkmemo.app"
         minSdk = 26
         targetSdk = 30
         versionCode = 1100

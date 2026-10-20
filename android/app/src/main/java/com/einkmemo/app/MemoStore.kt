@@ -54,8 +54,7 @@ data class SyncConflict(
 )
 
 class MemoStore(context: Context) {
-    // 存储标识保持旧名，避免升级后丢失现有笔记（与展示名无关）
-    private val prefs: SharedPreferences = context.getSharedPreferences("elinkmemo", Context.MODE_PRIVATE)
+    private val prefs: SharedPreferences = context.getSharedPreferences("einkmemo", Context.MODE_PRIVATE)
     private val appContext = context.applicationContext
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
     private val client = WebDavClient(context)

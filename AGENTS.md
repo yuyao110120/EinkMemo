@@ -27,7 +27,7 @@
 - 仓库：https://github.com/yuyao110120/EinkMemo（public，默认分支 `main`；原名 ElinkMemo，重命名后旧链接会重定向）
 - 设计约束：严格 1-bit（纯黑/白，唯一灰 #808080 仅用于已完成文字）；每页 3–10 行自适应分页；底栏 40dp；二级页行高 64dp；无动画/圆角/阴影。
 - 已有功能：右滑划掉、点击/左滑编辑、`+` 连续新增、手动 WebDAV 同步、Keystore 加密凭据、归档、系统/像素字体切换、每条前像素小图、点小图选中后点另一条交换位置、中英双语、多分辨率/横竖屏自适应。
-- 应用展示名 EinkMemo；`applicationId` 仍为 `com.elinkmemo.app`（保持升级兼容），代码 namespace 为 `com.einkmemo.app`。
+- 应用展示名 EinkMemo；`applicationId` 与代码 namespace 均为 `com.einkmemo.app`（v0.11.0 起；旧版 `com.elinkmemo.app` 会作为独立应用并存，迁移需先 WebDAV 同步）。
 - 原型与冻结规格：`prototype/`、`docs/SPEC.md`；调研：`docs/research/`。
 
 ## 构建 / 测试

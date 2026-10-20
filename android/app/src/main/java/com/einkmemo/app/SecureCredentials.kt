@@ -19,8 +19,7 @@ import javax.crypto.spec.GCMParameterSpec
  */
 class SecureCredentials(context: Context) {
     private val prefs: SharedPreferences =
-        // 存储标识与 Keystore alias 保持旧名，升级后才能解开已保存的 WebDAV 凭据
-        context.getSharedPreferences("elinkmemo_secure", Context.MODE_PRIVATE)
+        context.getSharedPreferences("einkmemo_secure", Context.MODE_PRIVATE)
 
     fun save(user: String, pass: String) {
         try {
@@ -84,7 +83,7 @@ class SecureCredentials(context: Context) {
 
     companion object {
         private const val ANDROID_KEYSTORE = "AndroidKeyStore"
-        private const val KEY_ALIAS = "elinkmemo_sync_credentials_v1"
+        private const val KEY_ALIAS = "einkmemo_sync_credentials_v1"
         private const val KEY_BLOB = "sync_credentials_v1"
         private const val TRANSFORMATION = "AES/GCM/NoPadding"
     }

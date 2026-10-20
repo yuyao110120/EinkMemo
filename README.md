@@ -28,6 +28,8 @@ EinkMemo is a tiny notes / to-do app designed for e-ink readers and any Android 
 
 The APK is debug-signed for sideloading and needs no Google services.
 
+> **Upgrading from ElinkMemo 0.10 or earlier?** The package id changed to `com.einkmemo.app`, so the new app installs alongside the old one. In the old app run **Sync now** first, then install EinkMemo and sync via WebDAV to pull your notes, and uninstall the old app afterwards.
+
 ## Gestures
 
 | Action | Result |
