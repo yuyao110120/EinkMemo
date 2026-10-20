@@ -28,6 +28,7 @@ private const val K_LAST_OK = "last_sync_ok"
 private const val K_LAST_ERROR = "last_sync_error"
 private const val K_LAST_SYNCED_REV = "last_synced_revision"
 private const val K_LAST_REMOTE_REV = "last_remote_revision"
+private const val K_FONT_MODE = "font_mode"
 
 data class NoteItem(
     val id: String,
@@ -40,6 +41,8 @@ data class NoteItem(
 )
 
 enum class Screen { Main, Settings, WebDav, Archive, About, Help }
+
+enum class FontMode { System, Pixel }
 
 enum class EditMode { Add, Edit }
 
@@ -80,6 +83,10 @@ class MemoStore(context: Context) {
     var editing by mutableStateOf<Editing?>(null)
     var selectedArchiveId by mutableStateOf<String?>(null)
     var seenHint by mutableStateOf(prefs.getBoolean(K_SEEN_HINT, false))
+        private set
+    var fontMode by mutableStateOf(
+        if (prefs.getInt(K_FONT_MODE, 0) == 1) FontMode.Pixel else FontMode.System
+    )
         private set
 
     val activeItems: List<NoteItem>
@@ -272,6 +279,11 @@ class MemoStore(context: Context) {
             seenHint = true
             prefs.edit().putBoolean(K_SEEN_HINT, true).apply()
         }
+    }
+
+    fun toggleFontMode() {
+        fontMode = if (fontMode == FontMode.Pixel) FontMode.System else FontMode.Pixel
+        prefs.edit().putInt(K_FONT_MODE, if (fontMode == FontMode.Pixel) 1 else 0).apply()
     }
 
     // ---------- sync config / test ----------

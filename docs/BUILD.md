@@ -53,7 +53,7 @@ CI 通过仓库 Secret `ANDROID_DEBUG_KEYSTORE_BASE64` 恢复本机 `~/.android/
 
 ## 版本参数
 
-- applicationId `com.elinkmemo.app`，versionName `0.6`，versionCode 6
+- applicationId `com.elinkmemo.app`，versionName `0.7`，versionCode 7
 - compileSdk 34 / targetSdk 30 / minSdk 26（Leaf2 是 Android 11 = API 30）
 - 依赖：Compose BOM 2024.06.00、Kotlin 1.9.24、AGP 8.5.2、OkHttp 4.12.0
 

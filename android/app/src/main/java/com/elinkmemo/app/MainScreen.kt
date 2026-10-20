@@ -2,7 +2,6 @@ package com.elinkmemo.app
 
 import android.graphics.Paint
 import android.graphics.Rect
-import android.graphics.Typeface
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
@@ -98,9 +97,10 @@ private fun NoteRow(
     onVerticalSwipe: (Float) -> Unit,
 ) {
     val density = LocalDensity.current
-    val paint = remember(fontSp) {
+    val typeface = LocalAppTypeface.current
+    val paint = remember(fontSp, typeface) {
         Paint().apply {
-            typeface = Typeface.create("sans-serif", Typeface.NORMAL)
+            this.typeface = typeface
             textSize = with(density) { fontSp.toPx() }
             isAntiAlias = true
         }

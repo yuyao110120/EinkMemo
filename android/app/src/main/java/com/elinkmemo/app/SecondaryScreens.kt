@@ -45,6 +45,10 @@ fun SettingsScreen(store: MemoStore) {
             store.selectedArchiveId = null
             store.screen = Screen.Archive
         }
+        MenuRowTall(
+            "字体",
+            if (store.fontMode == FontMode.Pixel) "像素字体 · 点击切换为系统" else "系统字体 · 点击切换为像素",
+        ) { store.toggleFontMode() }
         MenuRow("帮助", chevron = true) { store.screen = Screen.Help }
         MenuRow("关于", chevron = true) { store.screen = Screen.About }
     }
@@ -180,6 +184,8 @@ fun AboutScreen(store: MemoStore) {
             InkText("ElinkMemo", 34.sp)
             Spacer(Modifier.height(10.dp))
             InkText("版本 " + BuildConfig.VERSION_NAME + " · 墨水屏极简便签", 16.sp)
+            Spacer(Modifier.height(6.dp))
+            InkText("像素字体：Fusion Pixel Font · SIL OFL 1.1", 14.sp)
         }
     }
 }
@@ -202,6 +208,7 @@ fun HelpScreen(store: MemoStore) {
             HelpLine("左下 ⋯：进入设置（WebDAV、归档、帮助）")
             HelpLine("已完成不会自动消失；在设置里「归档已完成」后移入归档记录")
             HelpLine("归档记录里点击条目，可还原为未完成或永久删除")
+            HelpLine("字体：设置 → 字体，可在系统字体 / 像素字体之间切换")
             Spacer(Modifier.height(22.dp))
             HelpSection("同步配置")
             HelpLine("设置 → WebDAV 设置：填写 NAS 的 WebDAV 地址")

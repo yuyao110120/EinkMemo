@@ -5,7 +5,8 @@
 - 主页面：无标题栏，固定 10 条/页，右滑划掉、左滑或点击编辑、+ 连续新增，纯黑白零动画
 - 已完成原地保留（删除线 + 灰），设置页手动「归档已完成」，归档记录可还原 / 永久删除
 - 手动 WebDAV 同步（单文件 `notes.json`，内网 NAS），启动不自动同步
-- 技术栈：Kotlin + Jetpack Compose 原生 APK（当前 v0.6，原型验收后实现）
+- 字体：内置系统字体与像素字体（Fusion Pixel Font），设置内随时切换
+- 技术栈：Kotlin + Jetpack Compose 原生 APK（当前 v0.7，原型验收后实现）
 
 ## 目录
 
@@ -19,6 +20,8 @@
 | `docs/research/` | 三份事实调研（墨水屏平台、WebDAV/CORS、Leaf2 与构建链） |
 | `.github/workflows/release.yml` | 推送 `v*` tag 自动构建 APK 并发布 Release |
 | `docs/releases/` | 各版本 Release 说明 |
+| `third_party/` | 第三方字体与许可文本 |
+| `THIRD_PARTY_NOTICES.md` | 第三方资源清单 |
 | `tools/` | 本地工具链（JDK17 / Gradle / Android SDK）与 QA 脚本（不入交付） |
 
 ## 安装 APK（Leaf2）
@@ -54,6 +57,12 @@ Chrome 打开 http://127.0.0.1:4173/ ，Leaf2 浏览器打开 `http://<Mac 局�
     gh release create v0.7 dist/ElinkMemo-0.7-debug.apk --title "ElinkMemo v0.7" --notes-file docs/releases/v0.7.md
 
 
+## v0.7 变更（2026-10-20）
+
+1. 新增像素字体：[Fusion Pixel Font](https://github.com/TakWolf/fusion-pixel-font) 12px proportional（zh_hans 变体，SIL OFL 1.1），随 APK 内嵌
+2. 设置新增「字体」项：系统字体 / 像素字体一键切换并持久化；影响主列表、二级页、输入框与关于页
+3. 行内光学居中按当前字体重新计算；关于页增加字体署名，帮助页补充切换说明
+
 ## v0.6 变更（2026-10-18）
 
 1. WebDAV 用户名/密码改为 Android Keystore 加密存储：AES-256-GCM 密钥保存在 AndroidKeyStore（密钥不出安全区），SharedPreferences 中只有 IV+密文 blob
@@ -83,12 +92,17 @@ Chrome 打开 http://127.0.0.1:4173/ ，Leaf2 浏览器打开 `http://<Mac 局�
 4. App 图标改为简笔便签线稿（折角 + 三行横线）
 5. 实体翻页键兼容范围扩大：PAGE_UP/DOWN、音量键、方向键；未命中的按键会打 `ElinkMemoKey` 日志便于真机排查
 
-## 已知限制（v0.6）
+## 已知限制（v0.7）
 
 - 允许明文 HTTP（仅适合内网自用；后续版本收窄为 network security config 白名单）
 - 实体翻页键：Leaf2 若按了没反应，请把 Boox 实体键映射改成「翻页键」或「音量键」再试；仍未触发可用 `adb logcat -s ElinkMemoKey` 抓按键码发我
 - 未接 Onyx 私有 SDK，App 内无法强制整页刷新（依赖翻页/系统整刷；真机残影明显再补）
 - 冲突处理是极简二选一（保留本机 / 保留远端），不做条目级合并
+
+## 第三方资源
+
+- 像素字体：[Fusion Pixel Font](https://github.com/TakWolf/fusion-pixel-font)（12px proportional · zh_hans · 2026.10.16 版），SIL Open Font License 1.1
+- 许可文本：`third_party/fusion-pixel-font/`（含上游字体 OFL 文本）；APK 内同时以 assets 附带，详见 [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)
 
 ## 冒烟测试（Android 11 模拟器，2026-10-18）
 
@@ -108,6 +122,7 @@ Chrome 打开 http://127.0.0.1:4173/ ，Leaf2 浏览器打开 `http://<Mac 局�
 - v0.4：40dp 底栏（图标/页码重新配比）
 - v0.5：关于页版本号自动读取
 - v0.6：Keystore 加密凭据 + 旧明文自动迁移（模拟器验证：迁移后 prefs 无明文、重启后凭据可解密、真实 WebDAV 同步成功）
+- v0.7：像素字体切换、选择持久化、输入框/二级页/关于页渲染正常、无崩溃
 
 截图见 [docs/screenshots/](docs/screenshots/)。
 

@@ -30,6 +30,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
@@ -51,6 +52,7 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.TextLayoutResult
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -61,6 +63,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import android.graphics.Typeface
 import java.time.Instant
 import java.time.LocalDate
 import java.time.ZoneId
@@ -70,6 +73,10 @@ import kotlin.math.abs
 val InkBlack = Color(0xFF000000)
 val InkWhite = Color(0xFFFFFFFF)
 val InkGray = Color(0xFF808080)
+
+val PixelFontFamily: FontFamily = FontFamily(Font(R.font.fusion_pixel_12px_proportional))
+val LocalAppFontFamily = staticCompositionLocalOf<FontFamily> { FontFamily.SansSerif }
+val LocalAppTypeface = staticCompositionLocalOf<Typeface> { Typeface.create("sans-serif", Typeface.NORMAL) }
 
 @Composable
 fun systemStatusBarHeight(): Dp {
@@ -117,7 +124,7 @@ fun InkText(
             fontSize = fontSize,
             lineHeight = lineHeight,
             textDecoration = textDecoration,
-            fontFamily = FontFamily.SansSerif,
+            fontFamily = LocalAppFontFamily.current,
         ),
         maxLines = maxLines,
         overflow = overflow,
@@ -257,7 +264,7 @@ fun FieldRow(
                     textStyle = TextStyle(
                         fontSize = 17.sp,
                         color = InkBlack,
-                        fontFamily = FontFamily.SansSerif,
+                        fontFamily = LocalAppFontFamily.current,
                     ),
                     cursorBrush = SolidColor(InkBlack),
                     visualTransformation = if (isPassword) PasswordVisualTransformation() else VisualTransformation.None,
@@ -434,7 +441,7 @@ fun InputBar(store: MemoStore) {
                         fontSize = 20.sp,
                         color = InkBlack,
                         lineHeight = 20.sp,
-                        fontFamily = FontFamily.SansSerif,
+                        fontFamily = LocalAppFontFamily.current,
                     ),
                     cursorBrush = SolidColor(InkBlack),
                     keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
