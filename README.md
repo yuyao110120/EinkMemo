@@ -13,7 +13,7 @@ EinkMemo is a tiny notes / to-do app designed for e-ink readers and any Android 
 - **Strictly 1-bit**: black and white only, one grey for crossed-off text. No shadows, ripples or transitions — crisp and refresh-friendly on e-ink.
 - **Fits any screen**: rows per page adapt to resolution and orientation (3–10 rows); portrait and landscape both work.
 - **Fast to use**: swipe right to cross off, tap or swipe left to edit, `+` for continuous adding.
-- **Playful detail**: a tiny pixel doodle before every note. Tap the doodle to select a row, then tap another row to swap their positions.
+- **Playful detail**: a tiny pixel doodle before every note. Tap a doodle to select a row, then tap another row: the left third inserts above, the middle swaps, and the right third inserts below.
 - **Archive**: finished notes stay in place until you archive them from Settings; restore or delete forever from the archive.
 - **Manual WebDAV sync**: one `notes.json` on your own NAS. If both sides changed, choose which copy to keep.
 - **Keystore-protected credentials**: WebDAV username and password are encrypted with AES-256-GCM via the Android Keystore.
@@ -37,7 +37,7 @@ The APK is debug-signed for sideloading and needs no Google services.
 | Swipe right on a row | Cross off / undo |
 | Tap or swipe left on a row | Edit its text |
 | Bottom-right `+` | Add a note (Enter keeps adding) |
-| Tap the doodle before a row | Select it, then tap another row to swap |
+| Tap a doodle | Select a row; tap another row's left/middle/right third to insert above / swap / insert below |
 | Swipe up / down, page or volume keys | Turn page |
 | Bottom-left `⋯` | Settings (WebDAV, archive, fonts, help) |
 

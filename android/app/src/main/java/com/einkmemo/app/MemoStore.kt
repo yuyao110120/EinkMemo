@@ -48,6 +48,8 @@ enum class FontMode { System, Pixel }
 
 enum class LanguageMode { System, English, Chinese }
 
+enum class DropZone { Above, Swap, Below }
+
 enum class EditMode { Add, Edit }
 
 data class Editing(val mode: EditMode, val id: String? = null)
@@ -218,28 +220,39 @@ class MemoStore(context: Context) {
         swapId = null
     }
 
-    /** 点条目前的像素小图：选中 / 再点取消 / 已选中时点别的条目则交换 */
+    /** 点条目前的像素小图：选中 / 再点取消 */
     fun tapDoodle(id: String) {
-        val current = swapId
-        when {
-            current == null -> swapId = id
-            current == id -> swapId = null
-            else -> {
-                swapItems(current, id)
-                swapId = null
-            }
-        }
+        swapId = if (swapId == id) null else id
     }
 
-    /** 点条目正文：未选中时编辑；选中时点另一条交换位置 */
-    fun tapRow(id: String) {
-        val current = swapId
-        if (current == null) {
-            openEdit(id)
-        } else {
-            if (current != id) swapItems(current, id)
+    /** 选中后点另一条：左侧三分之一上插、中间交换、右侧三分之一下插 */
+    fun tapRowZone(targetId: String, zone: DropZone) {
+        val moving = swapId ?: return
+        if (moving == targetId) {
             swapId = null
+            return
         }
+        when (zone) {
+            DropZone.Swap -> swapItems(moving, targetId)
+            DropZone.Above -> moveItem(moving, targetId, insertAfter = false)
+            DropZone.Below -> moveItem(moving, targetId, insertAfter = true)
+        }
+        swapId = null
+    }
+
+    private fun moveItem(movingId: String, targetId: String, insertAfter: Boolean) {
+        val from = items.indexOfFirst { it.id == movingId }
+        val target = items.indexOfFirst { it.id == targetId }
+        if (from < 0 || target < 0 || from == target) return
+        val now = System.currentTimeMillis()
+        val list = items.toMutableList()
+        val moving = list.removeAt(from)
+        var index = if (insertAfter) target + 1 else target
+        if (from < index) index -= 1
+        index = index.coerceIn(0, list.size)
+        list.add(index, moving.copy(updatedAt = now))
+        items = list
+        bumpRevision()
     }
 
     private fun swapItems(aId: String, bId: String) {

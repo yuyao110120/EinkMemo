@@ -6,14 +6,15 @@
     <string name="cancel">取消</string>
     <string name="page_indicator">%1$d/%2$d</string>
 
-    <string name="swap_hint">点另一条交换</string>
+    <string name="swap_hint">点另一条调整位置</string>
     <string name="sync_fail_line">同步失败 · 点此查看</string>
     <string name="input_hint_add">添加一条…</string>
     <string name="input_hint_edit">修改…</string>
 
     <string name="hint_swipe_off">右滑划掉</string>
     <string name="hint_tap_edit">点击编辑</string>
-    <string name="hint_swap">点小图选中 · 再点一条换位</string>
+    <string name="hint_swap">点小图选中 · 再点另一条调整位置</string>
+    <string name="hint_zone">左/中/右：上插 / 交换 / 下插</string>
     <string name="hint_turn_page">上下滑或翻页键翻页</string>
 
     <string name="conflict_title">同步冲突</string>
@@ -67,7 +68,7 @@
     <string-array name="help_ops_lines">
         <item>右滑条目：划掉完成；再右滑取消</item>
         <item>点击或左滑条目：编辑文本</item>
-        <item>点条目前的小图：选中后再点任意一条，交换两条位置</item>
+        <item>点小图选中后，点另一条的左/中/右：向上插入 / 交换 / 向下插入</item>
         <item>右下 +：新增；键盘上回车保存并继续输入</item>
         <item>翻页：上下滑，或使用设备的翻页 / 音量键</item>
         <item>左下 ⋯：进入设置（WebDAV、归档、帮助）</item>

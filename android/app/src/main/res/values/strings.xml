@@ -8,7 +8,7 @@
     <string name="page_indicator">%1$d/%2$d</string>
 
     <!-- main list -->
-    <string name="swap_hint">Tap another row to swap</string>
+    <string name="swap_hint">Tap another row to move</string>
     <string name="sync_fail_line">Sync failed · tap to view</string>
     <string name="input_hint_add">Add a note…</string>
     <string name="input_hint_edit">Edit…</string>
@@ -16,7 +16,8 @@
     <!-- first-launch hint -->
     <string name="hint_swipe_off">Swipe right to cross off</string>
     <string name="hint_tap_edit">Tap to edit</string>
-    <string name="hint_swap">Tap a doodle, then another row to swap</string>
+    <string name="hint_swap">Tap a doodle, then another row to move</string>
+    <string name="hint_zone">Left/middle/right: insert above / swap / below</string>
     <string name="hint_turn_page">Swipe up/down or page keys to turn</string>
 
     <!-- conflict -->
@@ -77,7 +78,7 @@
     <string-array name="help_ops_lines">
         <item>Swipe right on a row: cross it off; swipe right again to undo</item>
         <item>Tap or swipe left on a row: edit its text</item>
-        <item>Tap the doodle before a row: select it, then tap another row to swap positions</item>
+        <item>Tap a doodle to select a row, then tap another row: left = insert above, middle = swap, right = insert below</item>
         <item>Bottom right +: add; press Enter to save and keep adding</item>
         <item>Turn pages: swipe up/down, or use the device page / volume keys</item>
         <item>Bottom left ⋯: settings (WebDAV, archive, help)</item>

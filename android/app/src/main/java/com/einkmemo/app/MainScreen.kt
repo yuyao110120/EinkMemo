@@ -64,13 +64,18 @@ fun MainScreen(store: MemoStore) {
                             fontSp = fontSp,
                             showDivider = index < pageItems.lastIndex,
                             selected = store.swapId == item.id,
+                            selectionActive = store.swapId != null,
                             onTap = {
                                 store.dismissHint()
-                                store.tapRow(item.id)
+                                store.openEdit(item.id)
                             },
                             onIconTap = {
                                 store.dismissHint()
                                 store.tapDoodle(item.id)
+                            },
+                            onZoneTap = { zone ->
+                                store.dismissHint()
+                                store.tapRowZone(item.id, zone)
                             },
                             onSwipeRight = {
                                 store.dismissHint()
@@ -107,8 +112,10 @@ private fun NoteRow(
     fontSp: TextUnit,
     showDivider: Boolean,
     selected: Boolean,
+    selectionActive: Boolean,
     onTap: () -> Unit,
     onIconTap: () -> Unit,
+    onZoneTap: (DropZone) -> Unit,
     onSwipeRight: () -> Unit,
     onSwipeLeft: () -> Unit,
     onVerticalSwipe: (Float) -> Unit,
@@ -140,14 +147,18 @@ private fun NoteRow(
             .fillMaxWidth()
             .height(rowHeight)
             .background(if (selected) InkBlack else InkWhite)
-            .pointerInput(item.id, selected, iconHitPx) {
+            .pointerInput(item.id, selected, selectionActive, iconHitPx) {
                 detectRowGestures(
                     onTap = { pos ->
-                        if (pos.x <= iconHitPx) onIconTap() else onTap()
+                        when {
+                            selectionActive -> onZoneTap(zoneOf(pos.x, size.width))
+                            pos.x <= iconHitPx -> onIconTap()
+                            else -> onTap()
+                        }
                     },
-                    onSwipeRight = { if (!selected) onSwipeRight() },
-                    onSwipeLeft = { if (!selected) onSwipeLeft() },
-                    onVerticalSwipe = { dy -> if (!selected) onVerticalSwipe(dy) },
+                    onSwipeRight = { if (!selected && !selectionActive) onSwipeRight() },
+                    onSwipeLeft = { if (!selected && !selectionActive) onSwipeLeft() },
+                    onVerticalSwipe = { dy -> if (!selected && !selectionActive) onVerticalSwipe(dy) },
                 )
             }
     ) {
@@ -197,4 +208,10 @@ private fun NoteRow(
             )
         }
     }
+}
+
+private fun zoneOf(x: Float, width: Int): DropZone = when {
+    x < width / 3f -> DropZone.Above
+    x < width * 2f / 3f -> DropZone.Swap
+    else -> DropZone.Below
 }

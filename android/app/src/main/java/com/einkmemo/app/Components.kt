@@ -493,6 +493,7 @@ fun HintOverlay() {
             InkText(stringResource(R.string.hint_swipe_off), 20.sp)
             InkText(stringResource(R.string.hint_tap_edit), 20.sp)
             InkText(stringResource(R.string.hint_swap), 20.sp)
+            InkText(stringResource(R.string.hint_zone), 20.sp)
             InkText(stringResource(R.string.hint_turn_page), 20.sp)
         }
     }
